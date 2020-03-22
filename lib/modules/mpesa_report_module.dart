@@ -9,6 +9,8 @@ class MpesaReportModule{
                                               address: 'MPESA'
     );
     print("******************");
+    print(messages.length);
+    print(messages.first.body);
 
     return messages;
 
@@ -17,3 +19,4 @@ class MpesaReportModule{
 
 
 }
+

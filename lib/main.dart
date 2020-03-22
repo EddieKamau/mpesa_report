@@ -18,3 +18,22 @@ class SmsReport extends StatelessWidget {
     );
   }
 }
+
+// received
+// sent
+// cost
+// savings
+// bills
+// good/services
+// withdrew
+
+/// model{
+///   date
+///   amount
+///   type
+///   second party name
+///   second party account
+///   balance
+///   cost
+///   transId
+/// }
