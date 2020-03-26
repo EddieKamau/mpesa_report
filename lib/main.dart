@@ -12,28 +12,9 @@ class SmsReport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(mpesaReportModule.fetchMpesaSms());
+    mpesaReportModule.groupTransactions();
     return Container(
       
     );
   }
 }
-
-// received
-// sent
-// cost
-// savings
-// bills
-// good/services
-// withdrew
-
-/// model{
-///   date
-///   amount
-///   type
-///   second party name
-///   second party account
-///   balance
-///   cost
-///   transId
-/// }
