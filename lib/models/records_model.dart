@@ -40,7 +40,7 @@ class RecordsModel{
   }
 
   double get totalIn{
-    double _in = sentModule.sentTransactionsModel.totalAmount +
+    double _in = receivedModule.receivedTransactionsModel.totalAmount +
                 reversalModule.reversalTransactionsModel.totalAmount;
 
     return _in;

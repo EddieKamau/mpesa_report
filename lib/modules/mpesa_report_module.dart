@@ -42,7 +42,7 @@ class MpesaReportModule{
       
 
       if(_body.contains('Failed.') || _body.contains('[') || _body.contains('failed,')){
-        return null;
+        continue;
       }
 
       // Extract type (bills, goods, received, savings, sent, withdraw)

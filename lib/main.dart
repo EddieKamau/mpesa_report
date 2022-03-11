@@ -2,17 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:mpesa_report/modules/mpesa_report_module.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: SmsReport(),
   ));
 }
 
-class SmsReport extends StatelessWidget {
-  final MpesaReportModule mpesaReportModule = MpesaReportModule(); 
+class SmsReport extends StatefulWidget {
+
+  const SmsReport({Key? key}) : super(key: key); 
+
+  @override
+  State<SmsReport> createState() => _SmsReportState();
+}
+
+class _SmsReportState extends State<SmsReport> {
+  final MpesaReportModule mpesaReportModule = MpesaReportModule();
+
+  @override
+  void initState() {
+    super.initState();
+    print("object...................................");
+    mpesaReportModule.groupTransactions();
+  }
 
   @override
   Widget build(BuildContext context) {
-    mpesaReportModule.groupTransactions();
+    
     return Container(
       
     );
