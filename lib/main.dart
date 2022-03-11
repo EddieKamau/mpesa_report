@@ -16,13 +16,12 @@ class SmsReport extends StatefulWidget {
 }
 
 class _SmsReportState extends State<SmsReport> {
-  final MpesaReportModule mpesaReportModule = MpesaReportModule();
+  // final MpesaReportModule mpesaReportModule = MpesaReportModule();
 
   @override
   void initState() {
     super.initState();
-    print("object...................................");
-    mpesaReportModule.groupTransactions();
+    // mpesaReportModule.groupTransactions();
   }
 
   @override

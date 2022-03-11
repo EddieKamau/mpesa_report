@@ -6,14 +6,14 @@ class GoodsServicesModule{
   GoodsServicesTransactionsModel goodsServicesTransactionsModel = GoodsServicesTransactionsModel();
   List<GoodsServicesModel> goodsServicesModels = [];
 
-  DateTime? _dateTime;
-  double _amount = 0;
-  String? _transId;
-  double? _balanceWallet;
-  String? _secondPartName;
 
 
   void process(String _body){
+    DateTime? _dateTime;
+    double _amount = 0;
+    String? _transId;
+    double? _balanceWallet;
+    String? _secondPartName;
 
     // Extract amount
     _amount = extractAmount(_body);

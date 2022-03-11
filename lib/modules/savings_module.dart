@@ -6,16 +6,16 @@ class SavingsModule{
   SavingsTransactionsModel savingsTransactionsModel = SavingsTransactionsModel();
   List<SavingsModel> savingsModels = [];
 
-  DateTime? _dateTime;
-  double _amount = 0;
-  double _balanceSavings = 0;
   double _balanceWallet = 0;
-  String? _transId;
 
   double get balanceWallet => _balanceWallet;
 
 
   void process(String _body, bool save){
+    DateTime? _dateTime;
+    double _amount = 0;
+    double _balanceSavings = 0;
+    String? _transId;
 
     // Extract amount
     _amount = extractAmount(_body);

@@ -6,16 +6,17 @@ class BillsModule{
   BillsTransactionsModel billsTransactionsModel = BillsTransactionsModel();
   List<BillsModel> billsModels = [];
 
-  DateTime? _dateTime;
-  double _amount = 0;
-  String? _transId;
-  double _cost = 0;
-  double? _balanceWallet;
-  String? _secondPartName;
-  String? _secondPartAccount;
+
 
 
   void process(String _body){
+    DateTime? _dateTime;
+    double _amount = 0;
+    String? _transId;
+    double _cost = 0;
+    double? _balanceWallet;
+    String? _secondPartName;
+    String? _secondPartAccount;
 
     // Extract amount
     _amount = extractAmount(_body);

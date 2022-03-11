@@ -6,15 +6,15 @@ class ReceivedModule{
   ReceivedTransactionsModel receivedTransactionsModel = ReceivedTransactionsModel();
   List<ReceivedModel> receivedModels = [];
 
-  DateTime? _dateTime;
-  double _amount = 0;
-  String? _transId;
-  double _balanceWallet = 0;
-  String? _secondPartName;
-  String? _secondPartAccount;
 
 
   void process(String _body){
+    DateTime? _dateTime;
+    double _amount = 0;
+    String? _transId;
+    double _balanceWallet = 0;
+    String? _secondPartName;
+    String? _secondPartAccount;
 
     // Extract amount
     _amount = extractAmount(_body);

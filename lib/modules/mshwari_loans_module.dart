@@ -6,16 +6,16 @@ class MshwariLoansModule{
   LoansTransactionsModel loansTransactionsModel = LoansTransactionsModel();
   List<LoanModel> loanModels = [];
 
-  DateTime? _dateTime;
-  double _amount = 0;
-  double? _loan;
   double _balanceWallet = 0;
-  String? _transId;
 
   double get balanceWallet => _balanceWallet;
 
 
   void process(String _body, bool pay){
+    DateTime? _dateTime;
+    double _amount = 0;
+    double? _loan;
+    String? _transId;
 
     // Extract amount
     _amount = extractAmount(_body);
