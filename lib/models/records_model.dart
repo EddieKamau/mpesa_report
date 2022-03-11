@@ -13,14 +13,14 @@ class RecordsModel{
     
   }
 
-  BillsModule billsModule;
-  GoodsServicesModule goodsServicesModule;
-  MshwariLoansModule mshwariLoansModule;
-  ReceivedModule receivedModule;
-  ReversalModule reversalModule;
-  SavingsModule savingsModule;
-  SentModule sentModule;
-  WithdrawModule withdrawModule;
+  late BillsModule billsModule;
+  late GoodsServicesModule goodsServicesModule;
+  late MshwariLoansModule mshwariLoansModule;
+  late ReceivedModule receivedModule;
+  late ReversalModule reversalModule;
+  late SavingsModule savingsModule;
+  late SentModule sentModule;
+  late WithdrawModule withdrawModule;
 
   double get totalCost{
     double _cost = billsModule.billsTransactionsModel.totalCost +

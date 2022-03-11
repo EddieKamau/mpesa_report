@@ -6,13 +6,13 @@ class BillsModule{
   BillsTransactionsModel billsTransactionsModel = BillsTransactionsModel();
   List<BillsModel> billsModels = [];
 
-  DateTime _dateTime;
+  DateTime? _dateTime;
   double _amount = 0;
-  String _transId;
+  String? _transId;
   double _cost = 0;
-  double _balanceWallet;
-  String _secondPartName;
-  String _secondPartAccount;
+  double? _balanceWallet;
+  String? _secondPartName;
+  String? _secondPartAccount;
 
 
   void process(String _body){

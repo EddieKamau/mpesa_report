@@ -1,20 +1,20 @@
 class SentTransactionsModel{
-  List<SentModel> transactions;
+  List<SentModel> transactions = [];
 
   double get totalCost {
     double _cost = 0;
-    transactions.forEach((object) {
-      _cost += object.cost;
+    for (var object in transactions) {
+      _cost += object.cost ?? 0;
       
-    } );
+    }
     return _cost;
   }
   double get totalAmount {
     double _amount = 0;
-    transactions.forEach((object) {
-      _amount += object.amount;
+    for (var object in transactions) {
+      _amount += object.amount ?? 0;
       
-    } );
+    }
     return _amount;
   }
   
@@ -32,13 +32,13 @@ class SentModel{
     this.transId,
   });
 
-  final double amount;
-  final double balance;
-  final double cost;
-  final DateTime dateTime;
-  final String partyName;
-  final String partyAccount;
-  final String transId;
+  final double? amount;
+  final double? balance;
+  final double? cost;
+  final DateTime? dateTime;
+  final String? partyName;
+  final String? partyAccount;
+  final String? transId;
 
   
 }

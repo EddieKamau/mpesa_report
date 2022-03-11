@@ -6,12 +6,12 @@ class ReceivedModule{
   ReceivedTransactionsModel receivedTransactionsModel = ReceivedTransactionsModel();
   List<ReceivedModel> receivedModels = [];
 
-  DateTime _dateTime;
+  DateTime? _dateTime;
   double _amount = 0;
-  String _transId;
-  double _balanceWallet;
-  String _secondPartName;
-  String _secondPartAccount;
+  String? _transId;
+  double _balanceWallet = 0;
+  String? _secondPartName;
+  String? _secondPartAccount;
 
 
   void process(String _body){

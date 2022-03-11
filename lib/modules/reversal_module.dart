@@ -6,11 +6,11 @@ class ReversalModule{
   ReversalTransactionsModel reversalTransactionsModel = ReversalTransactionsModel();
   List<ReversalModel> reversalModels = [];
 
-  DateTime _dateTime;
+  DateTime? _dateTime;
   double _amount = 0;
-  String _transId;
-  double _balanceWallet;
-  String _aliasTransId;
+  String? _transId;
+  double _balanceWallet = 0;
+  String? _aliasTransId;
 
 
   void process(String _body){

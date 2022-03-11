@@ -1,13 +1,13 @@
 class LoansTransactionsModel{
-  List<LoanModel> transactions;
-  double loan;
+  List<LoanModel> transactions = [];
+  double loan = 0;
 
   double get totalAmount {
     double _amount = 0;
-    transactions.forEach((object) {
-      _amount += object.amount;
+    for (var object in transactions) {
+      _amount += object.amount ?? 0;
       
-    } );
+    }
     return _amount;
   }
   
@@ -27,11 +27,11 @@ class LoanModel{
     this.transId,
   });
 
-  final double amount;
-  final double loan;
-  final DateTime dateTime;
-  final LoanType loanType;
-  final String transId;
+  final double? amount;
+  final double? loan;
+  final DateTime? dateTime;
+  final LoanType? loanType;
+  final String? transId;
 
   
 }

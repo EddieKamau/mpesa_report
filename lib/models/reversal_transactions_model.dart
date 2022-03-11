@@ -1,12 +1,12 @@
 class ReversalTransactionsModel{
-  List<ReversalModel> transactions;
+  List<ReversalModel> transactions = [];
 
   double get totalAmount {
     double _amount = 0;
-    transactions.forEach((object) {
-      _amount += object.amount;
+    for (var object in transactions) {
+      _amount += object.amount ?? 0;
       
-    } );
+    }
     return _amount;
   }
   
@@ -22,11 +22,11 @@ class ReversalModel{
     this.transId,
   });
 
-  final double amount;
-  final double balance;
-  final DateTime dateTime;
-  final String aliasTransId;
-  final String transId;
+  final double? amount;
+  final double? balance;
+  final DateTime? dateTime;
+  final String? aliasTransId;
+  final String? transId;
 
   
 }

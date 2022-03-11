@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:mpesa_report/models/export_models.dart';
-import 'package:sms_maintained/sms.dart';
+import 'package:sms_advanced/sms_advanced.dart';
 
 class MpesaReportModule{
   SmsQuery smsQuery = SmsQuery();
-  double cost;
+  double cost = 0;
 
   RecordsModel recordsModel = RecordsModel();
   
@@ -35,10 +35,10 @@ class MpesaReportModule{
   void groupTransactions()async{
     final List<SmsMessage> _messages = await fetchMpesaSms();
     
-    _messages.forEach((message) {
+    for (var message in _messages) {
 
 
-      String _body = message.body;
+      String _body = message.body ?? '';
       
 
       if(_body.contains('Failed.') || _body.contains('[') || _body.contains('failed,')){
@@ -81,7 +81,7 @@ class MpesaReportModule{
       
 
 
-    });
+    }
 
 
     print('Total bills\t\t:${recordsModel.billsModule.billsTransactionsModel.totalAmount}');

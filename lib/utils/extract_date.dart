@@ -1,4 +1,4 @@
-DateTime extractDate(String _body){
+DateTime? extractDate(String _body){
   DateTime _dateTime;
   String _dtRaw;
   if(!_body.contains(' on ')){

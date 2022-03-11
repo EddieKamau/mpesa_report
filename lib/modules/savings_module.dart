@@ -6,11 +6,11 @@ class SavingsModule{
   SavingsTransactionsModel savingsTransactionsModel = SavingsTransactionsModel();
   List<SavingsModel> savingsModels = [];
 
-  DateTime _dateTime;
+  DateTime? _dateTime;
   double _amount = 0;
   double _balanceSavings = 0;
   double _balanceWallet = 0;
-  String _transId;
+  String? _transId;
 
   double get balanceWallet => _balanceWallet;
 

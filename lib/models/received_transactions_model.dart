@@ -1,12 +1,12 @@
 class ReceivedTransactionsModel{
-  List<ReceivedModel> transactions;
+  List<ReceivedModel> transactions = [];
 
   double get totalAmount {
     double _amount = 0;
-    transactions.forEach((object) {
-      _amount += object.amount;
+    for (var object in transactions) {
+      _amount += object.amount ?? 0;
       
-    } );
+    }
     return _amount;
   }
   
@@ -23,12 +23,12 @@ class ReceivedModel{
     this.transId,
   });
 
-  final double amount;
-  final double balance;
-  final DateTime dateTime;
-  final String partyName;
-  final String partyAccount;
-  final String transId;
+  final double? amount;
+  final double? balance;
+  final DateTime? dateTime;
+  final String? partyName;
+  final String? partyAccount;
+  final String? transId;
 
   
 }

@@ -6,11 +6,11 @@ class MshwariLoansModule{
   LoansTransactionsModel loansTransactionsModel = LoansTransactionsModel();
   List<LoanModel> loanModels = [];
 
-  DateTime _dateTime;
+  DateTime? _dateTime;
   double _amount = 0;
-  double _loan;
+  double? _loan;
   double _balanceWallet = 0;
-  String _transId;
+  String? _transId;
 
   double get balanceWallet => _balanceWallet;
 

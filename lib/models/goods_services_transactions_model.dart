@@ -1,12 +1,12 @@
 class GoodsServicesTransactionsModel{
-  List<GoodsServicesModel> transactions;
+  List<GoodsServicesModel> transactions = [];
 
   double get totalAmount {
     double _amount = 0;
-    transactions.forEach((object) {
-      _amount += object.amount;
+    for (var object in transactions) {
+      _amount += object.amount ?? 0;
       
-    } );
+    }
     return _amount;
   }
   
@@ -22,11 +22,11 @@ class GoodsServicesModel{
     this.transId,
   });
 
-  final double amount;
-  final double balance;
-  final DateTime dateTime;
-  final String partyName;
-  final String transId;
+  final double? amount;
+  final double? balance;
+  final DateTime? dateTime;
+  final String? partyName;
+  final String? transId;
 
   
 }

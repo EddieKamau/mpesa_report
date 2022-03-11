@@ -6,11 +6,11 @@ class GoodsServicesModule{
   GoodsServicesTransactionsModel goodsServicesTransactionsModel = GoodsServicesTransactionsModel();
   List<GoodsServicesModel> goodsServicesModels = [];
 
-  DateTime _dateTime;
+  DateTime? _dateTime;
   double _amount = 0;
-  String _transId;
-  double _balanceWallet;
-  String _secondPartName;
+  String? _transId;
+  double? _balanceWallet;
+  String? _secondPartName;
 
 
   void process(String _body){
