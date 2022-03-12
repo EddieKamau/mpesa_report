@@ -1,44 +1,27 @@
-class BillsTransactionsModel{
-  List<BillsModel> transactions = [];
+import 'package:mpesa_report/models/transaction_model.dart';
 
-  double get totalCost {
-    double _cost = 0;
-    for (var object in transactions) {
-      _cost += object.cost ?? 0;
-      
+class BillsModel extends TransactionModel{
+
+  String? partyAccount;
+
+
+  BillsModel.fromMessageString(String _body):super.fromMessageString(_body){
+    // Extract account and name
+    if(_body.contains('sent')){
+      partyName = _body.split('to ')[1].split(' ')[0]; // name
+      partyAccount = _body.split('account ')[1].split(' ')[0]; // account
+    } else {
+      partyName = 'AIRTIME'; // name
+      String _acc = 'self';
+      if(_body.split('airtime for ').length > 1 ){
+        _acc = _body.split('airtime for ')[1];
+      }
+      partyAccount = _acc; // account
     }
-    return _cost;
   }
-  double get totalAmount {
-    double _amount = 0;
-    for (var object in transactions) {
-      _amount += object.amount ?? 0;
-      
-    }
-    return _amount;
-  }
-  
 
-}
-
-class BillsModel{
-  BillsModel({
-    this.amount, 
-    this.balance, 
-    this.cost, 
-    this.dateTime, 
-    this.partyName, 
-    this.partyAccount, 
-    this.transId,
-  });
-
-  final double? amount;
-  final double? balance;
-  final double? cost;
-  final DateTime? dateTime;
-  final String? partyName;
-  final String? partyAccount;
-  final String? transId;
+  @override
+  String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
 
   
 }

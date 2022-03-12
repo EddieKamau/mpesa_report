@@ -1,3 +1,5 @@
+import 'package:mpesa_report/models/transaction_model.dart';
+
 class ReversalTransactionsModel{
   List<ReversalModel> transactions = [];
 
@@ -13,20 +15,19 @@ class ReversalTransactionsModel{
 
 }
 
-class ReversalModel{
-  ReversalModel({
-    this.amount, 
-    this.balance, 
-    this.dateTime, 
-    this.aliasTransId, 
-    this.transId,
-  });
+class ReversalModel extends TransactionModel{
+  
+  String? prevTransId;
 
-  final double? amount;
-  final double? balance;
-  final DateTime? dateTime;
-  final String? aliasTransId;
-  final String? transId;
+
+  ReversalModel.fromMessageString(String _body):super.fromMessageString(_body){
+    partyName = 'reversal';
+    // aliasId
+    prevTransId = _body.split('of transaction ')[1].split(' ')[0];
+  }
+
+  @override
+  String get partyDetail => '${partyName ?? ""} for ${prevTransId ?? ""}';
 
   
 }

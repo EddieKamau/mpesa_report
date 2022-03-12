@@ -1,34 +1,14 @@
-class GoodsServicesTransactionsModel{
-  List<GoodsServicesModel> transactions = [];
+import 'package:mpesa_report/models/transaction_model.dart';
 
-  double get totalAmount {
-    double _amount = 0;
-    for (var object in transactions) {
-      _amount += object.amount ?? 0;
-      
-    }
-    return _amount;
+class GoodsServicesModel extends TransactionModel{
+  
+  GoodsServicesModel.fromMessageString(String _body):super.fromMessageString(_body){
+    // Extract name
+    partyName = _body.split('paid to ')[1].split('.')[0]; // name
   }
-  
+  @override
+  String get partyDetail => 'To: ${partyName ?? ""}';
 
-}
-
-class GoodsServicesModel{
-  GoodsServicesModel({
-    this.amount, 
-    this.balance, 
-    this.dateTime, 
-    this.partyName, 
-    this.transId,
-  });
-
-  final double? amount;
-  final double? balance;
-  final DateTime? dateTime;
-  final String? partyName;
-  final String? transId;
-
-  
 }
 
 /// model{

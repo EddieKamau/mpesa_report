@@ -1,46 +1,23 @@
-class SentTransactionsModel{
-  List<SentModel> transactions = [];
+import 'package:mpesa_report/models/transaction_model.dart';
 
-  double get totalCost {
-    double _cost = 0;
-    for (var object in transactions) {
-      _cost += object.cost ?? 0;
-      
-    }
-    return _cost;
+
+class SentModel extends TransactionModel{
+
+  String? partyAccount;
+
+
+  SentModel.fromMessageString(String _body):super.fromMessageString(_body){
+    // Extract account and name
+    String _raw = _body.split('sent to ')[1].split('on')[0];
+    List<String> _rawList = _raw.split(' ');
+    partyName = _rawList.sublist(0, _rawList.length - 1).join(' '); // name
+    partyAccount = _rawList.last; // account
   }
-  double get totalAmount {
-    double _amount = 0;
-    for (var object in transactions) {
-      _amount += object.amount ?? 0;
-      
-    }
-    return _amount;
-  }
-  
 
-}
+  @override
+  String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
 
-class SentModel{
-  SentModel({
-    this.amount, 
-    this.balance, 
-    this.cost, 
-    this.dateTime, 
-    this.partyName, 
-    this.partyAccount, 
-    this.transId,
-  });
 
-  final double? amount;
-  final double? balance;
-  final double? cost;
-  final DateTime? dateTime;
-  final String? partyName;
-  final String? partyAccount;
-  final String? transId;
-
-  
 }
 
 /// model{

@@ -1,45 +1,20 @@
-class WithdrawTransactionsModel{
-  List<WithdrawModel> transactions = [];
+import 'package:mpesa_report/models/transaction_model.dart';
 
-  double get totalCost {
-    double _cost = 0;
-    for (var object in transactions) {
-      _cost += object.cost ?? 0;
-      
-    }
-    return _cost;
+
+class WithdrawModel extends TransactionModel{
+
+  String? partyAccount;
+
+
+  WithdrawModel.fromMessageString(String _body):super.fromMessageString(_body){
+    // Extract account and name
+    String _raw = _body.split('from ')[1].split('New')[0];
+    partyName = _raw.split(' - ')[1]; // name
+    partyAccount = _raw.split(' - ')[0]; // account
   }
-  double get totalAmount {
-    double _amount = 0;
-    for (var object in transactions) {
-      _amount += object.amount ?? 0;
-      
-    }
-    return _amount;
-  }
-  
 
-}
-
-class WithdrawModel{
-  WithdrawModel({
-    this.amount, 
-    this.balance, 
-    this.cost, 
-    this.dateTime, 
-    this.partyName, 
-    this.partyAccount, 
-    this.transId,
-  });
-
-  final double? amount;
-  final double? balance;
-  final double? cost;
-  final DateTime? dateTime;
-  final String? partyName;
-  final String? partyAccount;
-  final String? transId;
-
+  @override
+  String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
   
 }
 

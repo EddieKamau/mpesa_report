@@ -1,34 +1,21 @@
-class ReceivedTransactionsModel{
-  List<ReceivedModel> transactions = [];
+import 'package:mpesa_report/models/transaction_model.dart';
 
-  double get totalAmount {
-    double _amount = 0;
-    for (var object in transactions) {
-      _amount += object.amount ?? 0;
-      
-    }
-    return _amount;
+
+class ReceivedModel extends TransactionModel{
+
+  String? partyAccount;
+
+
+  ReceivedModel.fromMessageString(String _body):super.fromMessageString(_body){
+    // Extract account and name
+    String _raw = _body.split('from ')[1].split('on')[0];
+    List<String> _rawList = _raw.split(' ');
+    partyName = _rawList.sublist(0, _rawList.length - 1).join(' '); // name
+    partyAccount = _rawList.last; // account
   }
-  
 
-}
-
-class ReceivedModel{
-  ReceivedModel({
-    this.amount, 
-    this.balance, 
-    this.dateTime, 
-    this.partyName, 
-    this.partyAccount, 
-    this.transId,
-  });
-
-  final double? amount;
-  final double? balance;
-  final DateTime? dateTime;
-  final String? partyName;
-  final String? partyAccount;
-  final String? transId;
+  @override
+  String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
 
   
 }

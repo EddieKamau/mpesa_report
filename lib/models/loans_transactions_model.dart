@@ -1,37 +1,30 @@
-class LoansTransactionsModel{
-  List<LoanModel> transactions = [];
+import 'package:mpesa_report/models/transaction_model.dart';
+import 'package:mpesa_report/utils/balances/mshwari_loan_balance.dart';
+import 'package:mpesa_report/utils/format_amount.dart';
+
+class LoanModel extends TransactionModel{
+
   double loan = 0;
+  LoanType loanType = LoanType.loanGet;
 
-  double get totalAmount {
-    double _amount = 0;
-    for (var object in transactions) {
-      _amount += object.amount ?? 0;
-      
+
+  LoanModel.fromMessageString(String _body, bool pay):super.fromMessageString(_body){
+    loanType= pay ? LoanType.loanPay : LoanType.loanGet;
+    partyName = 'Loan';
+
+    // loan
+    if(_body.contains('repaid in full')){
+      loan = 0;
+    } else {
+      loan = amoutFormater(_body.split('Ksh')[1].split(' ')[0]);
     }
-    return _amount;
+
+    // Extract balances
+    balance = mshwariLoanBalance(_body);
   }
-  
-  set setLoan(double _amount){
-    loan = _amount;
-  }
-  
 
-}
-
-class LoanModel{
-  LoanModel({
-    this.amount, 
-    this.loan, 
-    this.dateTime, 
-    this.loanType, 
-    this.transId,
-  });
-
-  final double? amount;
-  final double? loan;
-  final DateTime? dateTime;
-  final LoanType? loanType;
-  final String? transId;
+  @override
+  String get partyDetail => loanType == LoanType.loanPay ? 'Pay loan': 'Get loan';
 
   
 }

@@ -5,14 +5,9 @@ import 'package:sms_advanced/sms_advanced.dart';
 
 class MpesaReportModule{
   SmsQuery smsQuery = SmsQuery();
-  double cost = 0;
 
   RecordsModel recordsModel = RecordsModel();
   
-
-  set setCost(double _amount){
-    cost = _amount;
-  }
 
   Future<List<SmsMessage>> fetchMpesaSms()async{
 
@@ -45,61 +40,55 @@ class MpesaReportModule{
         continue;
       }
 
-      // Extract type (bills, goods, received, savings, sent, withdraw)
-      if(_body.contains('for account') || _body.contains('airtime')){
-        recordsModel.billsModule.process(_body);
 
-      }else if(_body.contains('repaid')){
-        recordsModel.mshwariLoansModule.process(_body, true);
+      if(_body.contains('for account') || _body.contains('airtime')){ // bills / airtime
+        recordsModel.billsTransactionModule.process(_body);
 
-      }else if(_body.contains('loan has been approved')){
-        recordsModel.mshwariLoansModule.process(_body, false);
-      } else if(_body.contains('paid')){
-        recordsModel.goodsServicesModule.process(_body);
+      }else if(_body.contains('repaid')){ // loan pay
+        recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: true);
 
-      } else if(_body.contains('have received')){
-        recordsModel.receivedModule.process(_body);
+      }else if(_body.contains('loan has been approved')){ // get loan
+        recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: false);
 
-      } else if(_body.contains('sent')){
-        recordsModel.sentModule.process(_body);
+      } else if(_body.contains('paid')){ // buy goods
+        recordsModel.goodsServicesTransactionModule.process(_body);
+
+      } else if(_body.contains('have received')){ //recieved
+        recordsModel.receivedTransactionModule.process(_body);
+
+      } else if(_body.contains('sent')){ // sent
+        recordsModel.sentTransactionModule.process(_body);
         
-      } else if(_body.contains('transferred')){
+      } else if(_body.contains('transferred')){ // savings
         if(_body.contains('from')){
-          recordsModel.savingsModule.process(_body, false);
+          recordsModel.savingsTransactionModule.process(_body, savingsIn: false);
 
         } else {
-          recordsModel.savingsModule.process(_body, true);
+          recordsModel.savingsTransactionModule.process(_body, savingsIn: true);
 
         }
         
-      } else if(_body.contains('Reversal')){
-        recordsModel.reversalModule.process(_body);
-      } else if(_body.contains('Withdraw')){
-        recordsModel.withdrawModule.process(_body);
+      } else if(_body.contains('Reversal')){ // reversal
+        recordsModel.reversalTransactionModule.process(_body);
+
+      } else if(_body.contains('Withdraw')){ // withdraw
+        recordsModel.withdrawTransactionModule.process(_body);
+
+      } else if(_body.contains('Withdraw')){ // TODO deposit
+        recordsModel.withdrawTransactionModule.process(_body);
       }
-
-      
-
 
     }
 
-
-    print('Total bills\t\t:${recordsModel.billsModule.billsTransactionsModel.totalAmount}');
-    print('No. bills\t\t:${recordsModel.billsModule.billsTransactionsModel.transactions.length}');
-    print('Total goods/S\t:${recordsModel.goodsServicesModule.goodsServicesTransactionsModel.totalAmount}');
-    print('No. goods/S\t\t:${recordsModel.goodsServicesModule.goodsServicesTransactionsModel.transactions.length}');
-    print('Total sent\t\t:${recordsModel.sentModule.sentTransactionsModel.totalAmount}');
-    print('No. sent\t\t:${recordsModel.sentModule.sentTransactionsModel.transactions.length}');
-    print('Total received\t:${recordsModel.receivedModule.receivedTransactionsModel.totalAmount}');
-    print('No. received\t\t:${recordsModel.receivedModule.receivedTransactionsModel.transactions.length}');
-    print("_______________________________________");
-    print('Total in\t\t:${recordsModel.totalIn}');
-    print('Total out\t\t:${recordsModel.totalOut}');
-    print('Total cost\t\t:${recordsModel.totalCost}');
     
   }
 
 
 
 }
-
+enum MpesaTransactionType{
+  send, receive, 
+  withdraw, deposit,
+  paybill, buyGoods,
+  savings, loans
+}

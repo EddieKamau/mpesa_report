@@ -1,3 +1,6 @@
+import 'package:mpesa_report/models/transaction_model.dart';
+import 'package:mpesa_report/utils/balances/savings_balance.dart';
+
 class SavingsTransactionsModel{
   List<SavingsModel> transactions = [];
   double balance = 0;
@@ -18,22 +21,27 @@ class SavingsTransactionsModel{
 
 }
 
-class SavingsModel{
-  SavingsModel({
-    this.amount, 
-    this.balance, 
-    this.dateTime, 
-    this.savingsType, 
-    this.transId,
-  });
-
-  final double? amount;
-  final double? balance;
-  final DateTime? dateTime;
-  final SavingsType? savingsType;
-  final String? transId;
+class SavingsModel extends TransactionModel{
 
   
+  SavingsType savingsType = SavingsType.savingsIn;
+  double savingsBalance = 0;
+
+
+  SavingsModel.fromMessageString(String _body, bool save):super.fromMessageString(_body){
+    savingsType = save ? SavingsType.savingsIn : SavingsType.savingsOut;
+    partyName = 'Savings';
+
+    // Extract balances
+    List<double> _balances = savingsBalances(_body);
+    balance = _balances[0];
+    savingsBalance = _balances[1];
+  }
+
+  @override
+  String get partyDetail => savingsType == SavingsType.savingsIn ? 'To savings' : 'From savings';
+
+
 }
 
 enum SavingsType{
