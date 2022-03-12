@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   sms_advanced: ^1.0.1
+  ussd_advanced: ^0.1.2
 
   cupertino_icons: ^1.0.4
 
