@@ -58,7 +58,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
         child: Column(
           children: [
             Card(
@@ -114,7 +114,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
             if(isSearching) const LinearProgressIndicator(),
 
             Expanded(
-              child: TransactionsPage(_transactions),
+              child: TransactionsPage(_transactions, isAll: widget.isAll,),
             ),
           ],
         ),
@@ -149,9 +149,10 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
 
 class TransactionsPage extends StatelessWidget {
-  const TransactionsPage(this.transactions, { Key? key }) : super(key: key);
+  const TransactionsPage(this.transactions, {this.isAll = false, Key? key }) : super(key: key);
 
   final List<TransactionModel> transactions;
+  final bool isAll;
 
 
   @override
@@ -161,7 +162,7 @@ class TransactionsPage extends StatelessWidget {
       itemBuilder: (_, index){
         var _t = transactions[index];
         return ListTile(
-          leading: Text(_t.transactionType.name),
+          leading: isAll ? Text(_t.transactionType.name) : null,
           title: Text(_t.partyDetail),
           subtitle: Text(_t.dateTime?.toString().substring(0, 16) ?? ''),
           trailing: Text('Ksh. ${_t.amountFormated}', style: TextStyle(color: _t.isPositive ? Colors.green : Colors.redAccent,)),
