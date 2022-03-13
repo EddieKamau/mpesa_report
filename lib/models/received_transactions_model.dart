@@ -7,6 +7,8 @@ class ReceivedModel extends TransactionModel{
 
 
   ReceivedModel.fromMessageString(String _body):super.fromMessageString(_body){
+    transactionType = MpesaTransactionType.receive;
+    
     // Extract account and name
     String _raw = _body.split('from ')[1].split('on')[0];
     List<String> _rawList = _raw.split(' ');
@@ -16,6 +18,9 @@ class ReceivedModel extends TransactionModel{
 
   @override
   String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
+
+  @override
+  bool get isPositive => true;
 
   
 }

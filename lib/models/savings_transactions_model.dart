@@ -29,6 +29,8 @@ class SavingsModel extends TransactionModel{
 
 
   SavingsModel.fromMessageString(String _body, bool save):super.fromMessageString(_body){
+    transactionType = MpesaTransactionType.savings;
+
     savingsType = save ? SavingsType.savingsIn : SavingsType.savingsOut;
     partyName = 'Savings';
 
@@ -40,6 +42,9 @@ class SavingsModel extends TransactionModel{
 
   @override
   String get partyDetail => savingsType == SavingsType.savingsIn ? 'To savings' : 'From savings';
+
+  @override
+  bool get isPositive => savingsType == SavingsType.savingsOut;
 
 
 }

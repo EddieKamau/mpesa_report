@@ -27,7 +27,7 @@ class MpesaReportModule{
     return _amount;
   }
 
-  void groupTransactions()async{
+  Future groupTransactions()async{
     final List<SmsMessage> _messages = await fetchMpesaSms();
     
     for (var message in _messages) {
@@ -44,7 +44,7 @@ class MpesaReportModule{
       if(_body.contains('for account') || _body.contains('airtime')){ // bills / airtime
         recordsModel.billsTransactionModule.process(_body);
 
-      }else if(_body.contains('repaid')){ // loan pay
+      }else if(_body.contains('repaid') || _body.contains('repayment of')){ // loan pay
         recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: true);
 
       }else if(_body.contains('loan has been approved')){ // get loan
@@ -59,7 +59,7 @@ class MpesaReportModule{
       } else if(_body.contains('sent')){ // sent
         recordsModel.sentTransactionModule.process(_body);
         
-      } else if(_body.contains('transferred')){ // savings
+      } else if(_body.contains('transferred')|| _body.contains('transfered')){ // savings
         if(_body.contains('from')){
           recordsModel.savingsTransactionModule.process(_body, savingsIn: false);
 
@@ -80,15 +80,11 @@ class MpesaReportModule{
 
     }
 
+    return;
     
   }
 
 
+  
+}
 
-}
-enum MpesaTransactionType{
-  send, receive, 
-  withdraw, deposit,
-  paybill, buyGoods,
-  savings, loans
-}

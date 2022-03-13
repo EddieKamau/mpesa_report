@@ -1,3 +1,4 @@
+import 'package:mpesa_report/models/export_models.dart';
 import 'package:mpesa_report/utils/export_utils.dart';
 
 class TransactionModel implements Comparable<TransactionModel> {
@@ -15,6 +16,7 @@ class TransactionModel implements Comparable<TransactionModel> {
   double? cost;
   String? partyName;
   DateTime? dateTime;
+  MpesaTransactionType transactionType = MpesaTransactionType.send;
 
   String body = '';
 
@@ -23,6 +25,7 @@ class TransactionModel implements Comparable<TransactionModel> {
 
 
   String get partyDetail => partyName ?? '';
+  bool get isPositive => true;
 
   TransactionModel.fromMessageString(String _body){
     body = _body;
@@ -40,5 +43,68 @@ class TransactionModel implements Comparable<TransactionModel> {
 
     // Extract datetime
     dateTime = extractDate(_body);
+  }
+}
+
+enum MpesaTransactionType{
+  send, receive, reversal,
+  withdraw, deposit,
+  paybill, buyGoods,
+  savings, loans,
+}
+
+extension TransactionsTotals on List<TransactionModel>{
+  double get totalCost {
+    double _cost = 0;
+    for (var transaction in this) {
+      _cost += transaction.cost ?? 0;
+      
+    }
+    return _cost;
+  }
+  double get totalAmount {
+    double _amount = 0;
+    for (var transaction in this) {
+      _amount += transaction.amount ?? 0;
+      
+    }
+    return _amount;
+  }
+
+  double get totalOut{
+    double _out = 0;
+    for (var transaction in this) {
+      if(
+        transaction is BillsModel ||
+        transaction is GoodsServicesModel ||
+        transaction is SentModel ||
+        transaction is WithdrawModel
+      ){
+
+        _out += transaction.amount ?? 0;
+      }
+      
+    }
+
+    return _out;
+  }
+
+  double get totalIn{
+    double _in = 0;
+    for (var transaction in this) {
+      if(
+        transaction is ReceivedModel ||
+        transaction is ReversalModel
+        // transaction is WithdrawModel TODO: deposit
+      ){
+
+        _in += transaction.amount ?? 0;
+      }
+      
+    }
+    
+
+    return _in;
+
   }
 }

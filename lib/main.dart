@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpesa_report/models/transaction_model.dart';
 import 'package:mpesa_report/modules/mpesa_report_module.dart';
 import 'package:mpesa_report/transactions_page.dart';
 import 'package:ussd_advanced/ussd_advanced.dart';
@@ -18,12 +19,31 @@ class SmsReport extends StatefulWidget {
 }
 
 class _SmsReportState extends State<SmsReport> {
-  // final MpesaReportModule mpesaReportModule = MpesaReportModule();
+  final MpesaReportModule mpesaReportModule = MpesaReportModule();
+
+  List<ItemModel> _items = [];
+
+  ItemModel _all = ItemModel(label: 'All', transactions: []);
 
   @override
   void initState() {
     super.initState();
-    // mpesaReportModule.groupTransactions();
+    mpesaReportModule.groupTransactions().then((value){
+      setState(() {
+        _all = ItemModel(label: 'All', transactions: mpesaReportModule.recordsModel.allTransactions());
+
+        _items = [
+          ItemModel(label: 'Withdraw', transactions: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions),
+          ItemModel(label: 'Sent', transactions: mpesaReportModule.recordsModel.sentTransactionModule.transactions),
+          ItemModel(label: 'Received', transactions: mpesaReportModule.recordsModel.receivedTransactionModule.transactions),
+          ItemModel(label: 'Pay bills', transactions: mpesaReportModule.recordsModel.billsTransactionModule.transactions),
+          ItemModel(label: 'Buy goods', transactions: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions),
+          ItemModel(label: 'Savings', transactions: mpesaReportModule.recordsModel.savingsTransactionModule.transactions),
+          ItemModel(label: 'Loans', transactions: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions),
+          ItemModel(label: 'Reversal', transactions: mpesaReportModule.recordsModel.reversalTransactionModule.transactions),
+        ];
+      });
+    });
   }
 
   @override
@@ -44,11 +64,19 @@ class _SmsReportState extends State<SmsReport> {
             runSpacing: 15,
             spacing: 15,
             children: [
-              for(var i=0; i<6; i++)
-                ItemCard(
-                  i,
+              ItemCard(
+                  'All',
+                  mpesaReportModule.recordsModel.allTransactions().length,
                   onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const TransactionsPage()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
+                  },
+                ),
+              for(var _item in _items)
+                ItemCard(
+                  _item.label,
+                  _item.transactions.length,
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
                   },
                 ),
             ],
@@ -61,8 +89,9 @@ class _SmsReportState extends State<SmsReport> {
 
 
 class ItemCard extends StatelessWidget {
-  const ItemCard(this.i, { this.onTap,  Key? key }) : super(key: key);
-  final int i;
+  const ItemCard(this.label, this.count, { this.onTap,  Key? key }) : super(key: key);
+  final String label;
+  final int count;
   final void Function()? onTap;
 
   @override
@@ -85,7 +114,7 @@ class ItemCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                    child: const Text('27', style: TextStyle(color: Colors.white),),
+                    child: Text(count.toString(), style: const TextStyle(color: Colors.white),),
                   ),
                 ),
 
@@ -95,7 +124,7 @@ class ItemCard extends StatelessWidget {
                 const SizedBox(height: 8,),
 
                 // label
-                Text('label $i', style: const TextStyle(fontSize: 17),),
+                Text(label, style: const TextStyle(fontSize: 17),),
 
               ],
             ),
@@ -104,4 +133,10 @@ class ItemCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class ItemModel {
+  ItemModel({required this.label, required this.transactions});
+  String label;
+  List<TransactionModel> transactions;
 }

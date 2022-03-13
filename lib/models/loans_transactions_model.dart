@@ -9,11 +9,16 @@ class LoanModel extends TransactionModel{
 
 
   LoanModel.fromMessageString(String _body, bool pay):super.fromMessageString(_body){
+    transactionType = MpesaTransactionType.loans;
+    
     loanType= pay ? LoanType.loanPay : LoanType.loanGet;
     partyName = 'Loan';
 
     // loan
-    if(_body.contains('repaid in full')){
+    // check if kcb mpesa
+    if(_body.contains('KCB M-PESA')){
+      loan = 0;
+    }else if(_body.contains('repaid in full')){
       loan = 0;
     } else {
       loan = amoutFormater(_body.split('Ksh')[1].split(' ')[0]);
@@ -25,6 +30,9 @@ class LoanModel extends TransactionModel{
 
   @override
   String get partyDetail => loanType == LoanType.loanPay ? 'Pay loan': 'Get loan';
+
+  @override
+  bool get isPositive => loanType ==LoanType.loanGet;
 
   
 }

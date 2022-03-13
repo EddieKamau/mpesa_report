@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:mpesa_report/main.dart';
+import 'package:mpesa_report/models/transaction_model.dart';
 
-class TransactionsPage extends StatefulWidget {
-  const TransactionsPage({ Key? key }) : super(key: key);
+
+class TransactionHomePage extends StatefulWidget {
+  const TransactionHomePage(this.itemModel, {this.isAll = false, Key? key }) : super(key: key);
+  final ItemModel itemModel;
+  final bool isAll;
 
   @override
-  State<TransactionsPage> createState() => _TransactionsPageState();
+  State<TransactionHomePage> createState() => _TransactionHomePageState();
 }
 
-class _TransactionsPageState extends State<TransactionsPage> {
+class _TransactionHomePageState extends State<TransactionHomePage> {
   bool isSearching = false;
+  List<TransactionModel> _transactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _transactions = widget.itemModel.transactions;
+  }
+
+  void search(String val){
+    setState(() {
+      _transactions = widget.itemModel.transactions.where((t) => t.body.toLowerCase().contains(val.toLowerCase())).toList();
+    });
+  }
+
+  void stopSearch(){
+    setState(() {
+      _transactions = widget.itemModel.transactions;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: isSearching ? _searchField() : const Text('Sent Transactions'),
+      appBar:  AppBar(
+        title: isSearching ? _searchField() : Text('${widget.itemModel.label} Transactions'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -23,6 +47,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 setState(() {
                   isSearching = !isSearching;
                 });
+                if(!isSearching){
+                  stopSearch();
+                }
               }, 
               icon: Icon(isSearching ? Icons.clear_outlined :Icons.search_outlined)
             ),
@@ -31,30 +58,64 @@ class _TransactionsPageState extends State<TransactionsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: ListView.builder(
-          itemCount: 27,
-          itemBuilder: (_, index){
-            return ListTile(
-              leading: const Text('TType'),
-              title: const Text('To: 254712345678'),
-              subtitle: Text(DateTime.now().toString().substring(0, 16)),
-              trailing: Text('Ksh. ${index}00', style: TextStyle(color: index.isEven ? Colors.green : Colors.redAccent,)),
-              onTap: (){
-                showDialog(
-                  context: context, 
-                  builder: (_)=> const Dialog(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text(
-                        'aggsfsts aghshdh asgs asjdhwd ajdxjd ajdjasd akdhsh adkskd',
-                        style: TextStyle(fontSize: 16, letterSpacing: 1.15, wordSpacing: 1.2, height: 1.2),
-                      ),
+        child: Column(
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Count:'),
+                        Text(_transactions.length.toString()),
+                      ],
                     ),
-                  )
-                );
-              },
-            );
-          },
+
+                    // for all
+                    if(widget.isAll) Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total amount in:'),
+                        Text(_transactions.totalIn.toString()),
+                      ],
+                    ),
+                    if(widget.isAll) Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total amount out:'),
+                        Text(_transactions.totalOut.toString()),
+                      ],
+                    ),
+
+                    // for individual
+                    if(!widget.isAll) Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total amount:'),
+                        Text(_transactions.totalAmount.toString()),
+                      ],
+                    ),
+                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total cost:'),
+                        Text(_transactions.totalCost.toString()),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if(isSearching) const LinearProgressIndicator(),
+
+            Expanded(
+              child: TransactionsPage(_transactions),
+            ),
+          ],
         ),
       ),
     );
@@ -78,8 +139,49 @@ class _TransactionsPageState extends State<TransactionsPage> {
           });
         }else{
           // search
+          search(val);
         }
       },
     ),
   );
+}
+
+
+class TransactionsPage extends StatelessWidget {
+  const TransactionsPage(this.transactions, { Key? key }) : super(key: key);
+
+  final List<TransactionModel> transactions;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: transactions.length,
+      itemBuilder: (_, index){
+        var _t = transactions[index];
+        return ListTile(
+          leading: Text(_t.transactionType.name),
+          title: Text(_t.partyDetail),
+          subtitle: Text(_t.dateTime?.toString().substring(0, 16) ?? ''),
+          trailing: Text('Ksh. ${_t.amount}', style: TextStyle(color: _t.isPositive ? Colors.green : Colors.redAccent,)),
+          onTap: (){
+            showDialog(
+              context: context, 
+              builder: (_)=> Dialog(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    _t.body,
+                    style: const TextStyle(fontSize: 16, letterSpacing: 1.15, wordSpacing: 1.2, height: 1.2),
+                  ),
+                ),
+              )
+            );
+          },
+        );
+      },
+    );
+  }
+
+  
 }

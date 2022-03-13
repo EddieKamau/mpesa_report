@@ -7,6 +7,8 @@ class WithdrawModel extends TransactionModel{
 
 
   WithdrawModel.fromMessageString(String _body):super.fromMessageString(_body){
+    transactionType = MpesaTransactionType.withdraw;
+
     // Extract account and name
     String _raw = _body.split('from ')[1].split('New')[0];
     partyName = _raw.split(' - ')[1]; // name
@@ -15,6 +17,9 @@ class WithdrawModel extends TransactionModel{
 
   @override
   String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
+
+  @override
+  bool get isPositive => false;
   
 }
 

@@ -6,6 +6,8 @@ class BillsModel extends TransactionModel{
 
 
   BillsModel.fromMessageString(String _body):super.fromMessageString(_body){
+    transactionType = MpesaTransactionType.paybill;
+    
     // Extract account and name
     if(_body.contains('sent')){
       partyName = _body.split('to ')[1].split(' ')[0]; // name
@@ -23,6 +25,9 @@ class BillsModel extends TransactionModel{
   @override
   String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
 
+  @override
+  bool get isPositive => false;
+  
   
 }
 
