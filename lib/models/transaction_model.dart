@@ -97,8 +97,8 @@ extension TransactionsTotals on List<TransactionModel>{
     for (var transaction in this) {
       if(
         transaction is ReceivedModel ||
-        transaction is ReversalModel
-        // transaction is WithdrawModel TODO: deposit
+        transaction is ReversalModel ||
+        transaction is DepositModel
       ){
 
         _in += transaction.amount ?? 0;

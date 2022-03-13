@@ -16,7 +16,7 @@ class WithdrawModel extends TransactionModel{
   }
 
   @override
-  String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
+  String get partyDetail => 'From: ${partyName ?? ""} - ${partyAccount ?? ""}';
 
   @override
   bool get isPositive => false;

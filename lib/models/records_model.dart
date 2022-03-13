@@ -5,6 +5,7 @@ import 'package:mpesa_report/models/export_models.dart';
 class RecordsModel{
   RecordsModel(){
     billsTransactionModule = TransactionModule();
+    depositTransactionModule = TransactionModule();
     goodsServicesTransactionModule = TransactionModule();
     mshwariLoansTransactionModule = TransactionModule();
     receivedTransactionModule = TransactionModule();
@@ -16,6 +17,7 @@ class RecordsModel{
   }
 
   late TransactionModule<BillsModel> billsTransactionModule;
+  late TransactionModule<DepositModel> depositTransactionModule;
   late TransactionModule<GoodsServicesModel> goodsServicesTransactionModule;
   late TransactionModule<LoanModel> mshwariLoansTransactionModule;
   late TransactionModule<ReceivedModel> receivedTransactionModule;
@@ -46,7 +48,7 @@ class RecordsModel{
   double get totalIn{
     double _in = receivedTransactionModule.totalAmount +
                 reversalTransactionModule.totalAmount;
-                // TODO deposit
+                depositTransactionModule.totalAmount;
 
     return _in;
 
@@ -55,6 +57,7 @@ class RecordsModel{
   List<TransactionModel> allTransactions (){
     final List<TransactionModel> _t = [
       ...billsTransactionModule.transactions,
+      ...depositTransactionModule.transactions,
       ...goodsServicesTransactionModule.transactions,
       ...mshwariLoansTransactionModule.transactions,
       ...receivedTransactionModule.transactions,
@@ -66,7 +69,7 @@ class RecordsModel{
 
     _t.sort();
 
-    return _t;
+    return _t.reversed.toList();
   }
 
 }

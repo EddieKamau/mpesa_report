@@ -7,3 +7,4 @@ export 'package:mpesa_report/models/withdraw_transactions_model.dart';
 export 'package:mpesa_report/models/loans_transactions_model.dart';
 export 'package:mpesa_report/models/records_model.dart';
 export 'package:mpesa_report/models/reversal_transactions_model.dart';
+export 'package:mpesa_report/models/deposit_transactions_model.dart';

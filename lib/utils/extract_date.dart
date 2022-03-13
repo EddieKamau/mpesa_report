@@ -1,10 +1,13 @@
 DateTime? extractDate(String _body){
   DateTime _dateTime;
   String _dtRaw;
-  if(!_body.contains(' on ')){
+  if(!(_body.contains(' on ') || _body.contains(' On '))){
+    
     return null;
-  }
-    if(_body.contains('transaction')){
+  } 
+    if(_body.contains(' On ')){
+      _dtRaw = _body.split(' On ')[1];
+    }else if(_body.contains('transaction')){
        if(_body.contains('  on ')){
         _dtRaw = _body.split('  on ')[1];
       }else{

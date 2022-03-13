@@ -40,8 +40,9 @@ class MpesaReportModule{
         continue;
       }
 
-
-      if(_body.contains('for account') || _body.contains('airtime')){ // bills / airtime
+      if(_body.contains('Give')){ // deposit
+        recordsModel.depositTransactionModule.process(_body);
+      }else if(_body.contains('for account') || _body.contains('airtime')){ // bills / airtime
         recordsModel.billsTransactionModule.process(_body);
 
       }else if(_body.contains('repaid') || _body.contains('repayment of')){ // loan pay
@@ -74,8 +75,6 @@ class MpesaReportModule{
       } else if(_body.contains('Withdraw')){ // withdraw
         recordsModel.withdrawTransactionModule.process(_body);
 
-      } else if(_body.contains('Withdraw')){ // TODO deposit
-        recordsModel.withdrawTransactionModule.process(_body);
       }
 
     }

@@ -27,8 +27,8 @@ class TransactionModule<T extends TransactionModel> {
       transactions.add(SentModel.fromMessageString(_body) as T);
     }else if(T == WithdrawModel){
       transactions.add(WithdrawModel.fromMessageString(_body) as T);
+    }else if(T == DepositModel){
+      transactions.add(DepositModel.fromMessageString(_body) as T);
     }
   }
 }
-
-// TODO: Deposit

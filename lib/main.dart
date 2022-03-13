@@ -3,10 +3,12 @@ import 'package:mpesa_report/models/transaction_model.dart';
 import 'package:mpesa_report/modules/mpesa_report_module.dart';
 import 'package:mpesa_report/transactions_page.dart';
 import 'package:ussd_advanced/ussd_advanced.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: SmsReport(),
+  runApp(MaterialApp(
+    theme: ThemeData.dark(),
+    home: const SmsReport(),
   ));
 }
 
@@ -34,6 +36,7 @@ class _SmsReportState extends State<SmsReport> {
 
         _items = [
           ItemModel(label: 'Withdraw', transactions: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions),
+          ItemModel(label: 'Deposit', transactions: mpesaReportModule.recordsModel.depositTransactionModule.transactions),
           ItemModel(label: 'Sent', transactions: mpesaReportModule.recordsModel.sentTransactionModule.transactions),
           ItemModel(label: 'Received', transactions: mpesaReportModule.recordsModel.receivedTransactionModule.transactions),
           ItemModel(label: 'Pay bills', transactions: mpesaReportModule.recordsModel.billsTransactionModule.transactions),
@@ -57,34 +60,90 @@ class _SmsReportState extends State<SmsReport> {
         child: const Icon(Icons.send_outlined),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Wrap(
-            runSpacing: 15,
-            spacing: 15,
-            children: [
-              ItemCard(
-                  'All',
-                  mpesaReportModule.recordsModel.allTransactions().length,
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
-                  },
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+        child: Column(
+          children: [
+            // toggle theme
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child:  Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _themeSwitch,
+                  ],
                 ),
-              for(var _item in _items)
-                ItemCard(
-                  _item.label,
-                  _item.transactions.length,
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
-                  },
+              ),
+            ),
+
+            // body
+            Align(
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Wrap(
+                  runSpacing: 5,
+                  spacing: 5,
+                  runAlignment: WrapAlignment.spaceEvenly,
+                  children: [
+                    ItemCard(
+                        'All',
+                        mpesaReportModule.recordsModel.allTransactions().length,
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
+                        },
+                      ),
+                    for(var _item in _items)
+                      ItemCard(
+                        _item.label,
+                        _item.transactions.length,
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
+                        },
+                      ),
+                  ],
                 ),
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  Widget get _themeSwitch => FlutterSwitch(
+        width: 70.0,
+        height: 35.0,
+        toggleSize: 35.0,
+        value: false,
+        borderRadius: 30.0,
+        padding: 2.0,
+        activeToggleColor: const Color(0xFF6E40C9),
+        inactiveToggleColor: const Color(0xFF2F363D),
+        activeSwitchBorder: Border.all(
+          color: const Color(0xFF3C1E70),
+          width: 6.0,
+        ),
+        inactiveSwitchBorder: Border.all(
+          color: const Color(0xFFD1D5DA),
+          width: 1.0,
+        ),
+        activeColor: const Color(0xFF271052),
+        inactiveColor: Colors.white,
+        activeIcon: const Icon(
+          Icons.nightlight_round,
+          color: Color(0xFFF8E3A1),
+        ),
+        inactiveIcon: const Icon(
+          Icons.wb_sunny,
+          color: Color(0xFFFFDF5D),
+        ),
+        onToggle: (val) {
+          setState(() {
+            // status7 = val;
+          });
+        },
+      ); 
 }
 
 
@@ -119,7 +178,7 @@ class ItemCard extends StatelessWidget {
                 ),
 
                 // icon
-                const Icon(Icons.radio, size: 55,),
+                const Icon(Icons.radio, size: 40,),
 
                 const SizedBox(height: 8,),
 
