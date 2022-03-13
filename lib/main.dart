@@ -26,7 +26,7 @@ class _SmsReportState extends State<SmsReport> {
 
   List<ItemModel> _items = [];
 
-  ItemModel _all = ItemModel(label: 'All', transactions: []);
+  ItemModel _all = ItemModel(label: 'All', transactions: [], iconData: Icons.all_inbox_outlined);
 
   @override
   void initState() {
@@ -41,18 +41,18 @@ class _SmsReportState extends State<SmsReport> {
 
     mpesaReportModule.groupTransactions().then((value){
       setState(() {
-        _all = ItemModel(label: 'All', transactions: mpesaReportModule.recordsModel.allTransactions());
+        _all = ItemModel(label: 'All', transactions: mpesaReportModule.recordsModel.allTransactions(), iconData: Icons.all_inbox_outlined);
 
         _items = [
-          ItemModel(label: 'Withdraw', transactions: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions),
-          ItemModel(label: 'Deposit', transactions: mpesaReportModule.recordsModel.depositTransactionModule.transactions),
-          ItemModel(label: 'Sent', transactions: mpesaReportModule.recordsModel.sentTransactionModule.transactions),
-          ItemModel(label: 'Received', transactions: mpesaReportModule.recordsModel.receivedTransactionModule.transactions),
-          ItemModel(label: 'Pay bills', transactions: mpesaReportModule.recordsModel.billsTransactionModule.transactions),
-          ItemModel(label: 'Buy goods', transactions: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions),
-          ItemModel(label: 'Savings', transactions: mpesaReportModule.recordsModel.savingsTransactionModule.transactions),
-          ItemModel(label: 'Loans', transactions: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions),
-          ItemModel(label: 'Reversal', transactions: mpesaReportModule.recordsModel.reversalTransactionModule.transactions),
+          ItemModel(label: 'Withdraw', transactions: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions, iconData: Icons.outbond_outlined),
+          ItemModel(label: 'Deposit', transactions: mpesaReportModule.recordsModel.depositTransactionModule.transactions, iconData: Icons.inbox_outlined),
+          ItemModel(label: 'Sent', transactions: mpesaReportModule.recordsModel.sentTransactionModule.transactions, iconData: Icons.send_to_mobile),
+          ItemModel(label: 'Received', transactions: mpesaReportModule.recordsModel.receivedTransactionModule.transactions, iconData: Icons.call_received),
+          ItemModel(label: 'Pay bills', transactions: mpesaReportModule.recordsModel.billsTransactionModule.transactions, iconData: Icons.receipt_long),
+          ItemModel(label: 'Buy goods', transactions: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions, iconData: Icons.shopping_cart_outlined),
+          ItemModel(label: 'Savings', transactions: mpesaReportModule.recordsModel.savingsTransactionModule.transactions, iconData: Icons.savings_outlined),
+          ItemModel(label: 'Loans', transactions: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions, iconData: Icons.money_outlined),
+          ItemModel(label: 'Reversal', transactions: mpesaReportModule.recordsModel.reversalTransactionModule.transactions, iconData: Icons.restart_alt),
         ];
       });
     });
@@ -69,62 +69,70 @@ class _SmsReportState extends State<SmsReport> {
     
     return MaterialApp(
       theme: _isDarkTheme ? ThemeData.dark() :  null,
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            UssdAdvanced.sendUssd(code: '*334#', subscriptionId: -1);
-          },
-          child: const Icon(Icons.send_outlined),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            children: [
-              // toggle theme
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _themeSwitch,
-                    ],
+      home: Builder(
+        builder: (context) {
+          return Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: (){
+                UssdAdvanced.sendUssd(code: '*334#', subscriptionId: -1);
+              },
+              child: const Icon(Icons.send_outlined),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+              child: Column(
+                children: [
+                  // toggle theme
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          _themeSwitch,
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
-              // body
-              Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Wrap(
-                    runSpacing: 5,
-                    spacing: 5,
-                    runAlignment: WrapAlignment.spaceEvenly,
-                    children: [
-                      ItemCard(
-                          'All',
-                          mpesaReportModule.recordsModel.allTransactions().length,
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
-                          },
+                  // body
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Wrap(
+                          runSpacing: 5,
+                          spacing: 5,
+                          runAlignment: WrapAlignment.spaceEvenly,
+                          children: [
+                            ItemCard(
+                                'All',
+                                mpesaReportModule.recordsModel.allTransactions().length,
+                                iconData: _all.iconData,
+                                onTap: (){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
+                                },
+                              ),
+                            for(var _item in _items)
+                              if(_item.transactions.isNotEmpty) ItemCard(
+                                _item.label,
+                                _item.transactions.length,
+                                iconData: _item.iconData,
+                                onTap: (){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
+                                },
+                              ),
+                          ],
                         ),
-                      for(var _item in _items)
-                        ItemCard(
-                          _item.label,
-                          _item.transactions.length,
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
-                          },
-                        ),
-                    ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -167,9 +175,10 @@ class _SmsReportState extends State<SmsReport> {
 
 
 class ItemCard extends StatelessWidget {
-  const ItemCard(this.label, this.count, { this.onTap,  Key? key }) : super(key: key);
+  const ItemCard(this.label, this.count, {required this.iconData, this.onTap,  Key? key }) : super(key: key);
   final String label;
   final int count;
+  final IconData iconData;
   final void Function()? onTap;
 
   @override
@@ -177,7 +186,7 @@ class ItemCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: SizedBox(
-        width: 150,
+        width: 140,
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -197,7 +206,7 @@ class ItemCard extends StatelessWidget {
                 ),
 
                 // icon
-                const Icon(Icons.radio, size: 40,),
+                Icon(iconData, size: 40,),
 
                 const SizedBox(height: 8,),
 
@@ -214,7 +223,8 @@ class ItemCard extends StatelessWidget {
 }
 
 class ItemModel {
-  ItemModel({required this.label, required this.transactions});
+  ItemModel({required this.label, required this.transactions, required this.iconData});
   String label;
+  IconData iconData;
   List<TransactionModel> transactions;
 }
