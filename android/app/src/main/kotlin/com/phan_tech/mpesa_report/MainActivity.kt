@@ -1,4 +1,4 @@
-package com.example.mpesa_report
+package com.phan_tech.mpesa_report
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -68,6 +68,8 @@ class _SmsReportState extends State<SmsReport> {
           ReportItem(label: 'Loans', value: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions.totalAmount, color: Colors.black),
           ReportItem(label: 'Reversal', value: mpesaReportModule.recordsModel.reversalTransactionModule.transactions.totalAmount, color: Colors.brown),
         ];
+
+        _reportItems.retainWhere((element) => element.value > 0);
       });
     });
   }
