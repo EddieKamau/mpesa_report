@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mpesa_report/models/transaction_model.dart';
 import 'package:mpesa_report/modules/mpesa_report_module.dart';
+import 'package:mpesa_report/theming_controller.dart';
 import 'package:mpesa_report/transactions_page.dart';
 import 'package:ussd_advanced/ussd_advanced.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
 void main() {
-  runApp(MaterialApp(
-    theme: ThemeData.dark(),
-    home: const SmsReport(),
-  ));
+  runApp(const SmsReport());
 }
 
 class SmsReport extends StatefulWidget {
@@ -22,6 +20,9 @@ class SmsReport extends StatefulWidget {
 
 class _SmsReportState extends State<SmsReport> {
   final MpesaReportModule mpesaReportModule = MpesaReportModule();
+  final ThemingController themingController = ThemingController();
+  
+  bool _isDarkTheme = false;
 
   List<ItemModel> _items = [];
 
@@ -30,6 +31,14 @@ class _SmsReportState extends State<SmsReport> {
   @override
   void initState() {
     super.initState();
+    
+    _isDarkTheme = themingController.isDarkTheme;
+    themingController.addListener(() {
+      setState(() {
+        _isDarkTheme = themingController.isDarkTheme;
+      });
+    });
+
     mpesaReportModule.groupTransactions().then((value){
       setState(() {
         _all = ItemModel(label: 'All', transactions: mpesaReportModule.recordsModel.allTransactions());
@@ -50,72 +59,81 @@ class _SmsReportState extends State<SmsReport> {
   }
 
   @override
+  void dispose() {
+    themingController.removeListener(() { });
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {  
     
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          UssdAdvanced.sendUssd(code: '*334#', subscriptionId: -1);
-        },
-        child: const Icon(Icons.send_outlined),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-        child: Column(
-          children: [
-            // toggle theme
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child:  Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    _themeSwitch,
-                  ],
+    return MaterialApp(
+      theme: _isDarkTheme ? ThemeData.dark() :  null,
+      home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            UssdAdvanced.sendUssd(code: '*334#', subscriptionId: -1);
+          },
+          child: const Icon(Icons.send_outlined),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          child: Column(
+            children: [
+              // toggle theme
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _themeSwitch,
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // body
-            Align(
-              alignment: Alignment.topCenter,
-              child: SingleChildScrollView(
-                child: Wrap(
-                  runSpacing: 5,
-                  spacing: 5,
-                  runAlignment: WrapAlignment.spaceEvenly,
-                  children: [
-                    ItemCard(
-                        'All',
-                        mpesaReportModule.recordsModel.allTransactions().length,
-                        onTap: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
-                        },
-                      ),
-                    for(var _item in _items)
+              // body
+              Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    runSpacing: 5,
+                    spacing: 5,
+                    runAlignment: WrapAlignment.spaceEvenly,
+                    children: [
                       ItemCard(
-                        _item.label,
-                        _item.transactions.length,
-                        onTap: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
-                        },
-                      ),
-                  ],
+                          'All',
+                          mpesaReportModule.recordsModel.allTransactions().length,
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
+                          },
+                        ),
+                      for(var _item in _items)
+                        ItemCard(
+                          _item.label,
+                          _item.transactions.length,
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget get _themeSwitch => FlutterSwitch(
-        width: 70.0,
+        width: 65.0,
         height: 35.0,
         toggleSize: 35.0,
-        value: false,
+        value: _isDarkTheme,
         borderRadius: 30.0,
         padding: 2.0,
         activeToggleColor: const Color(0xFF6E40C9),
@@ -140,7 +158,8 @@ class _SmsReportState extends State<SmsReport> {
         ),
         onToggle: (val) {
           setState(() {
-            // status7 = val;
+            themingController.changeTheme(val);
+            _isDarkTheme = val;
           });
         },
       ); 
