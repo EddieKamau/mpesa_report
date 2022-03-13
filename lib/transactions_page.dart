@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mpesa_report/main.dart';
 import 'package:mpesa_report/models/transaction_model.dart';
+import 'package:mpesa_report/utils/amount_to_string.dart';
 
 
 class TransactionHomePage extends StatefulWidget {
@@ -79,14 +80,14 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Total amount in:'),
-                        Text(_transactions.totalIn.toString()),
+                        Text(_transactions.totalIn.string),
                       ],
                     ),
                     if(widget.isAll) Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Total amount out:'),
-                        Text(_transactions.totalOut.toString()),
+                        Text(_transactions.totalOut.string),
                       ],
                     ),
 
@@ -95,7 +96,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Total amount:'),
-                        Text(_transactions.totalAmount.toString()),
+                        Text(_transactions.totalAmount.string),
                       ],
                     ),
                     
@@ -103,7 +104,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Total cost:'),
-                        Text(_transactions.totalCost.toString()),
+                        Text(_transactions.totalCost.string),
                       ],
                     ),
                   ],
@@ -163,7 +164,7 @@ class TransactionsPage extends StatelessWidget {
           leading: Text(_t.transactionType.name),
           title: Text(_t.partyDetail),
           subtitle: Text(_t.dateTime?.toString().substring(0, 16) ?? ''),
-          trailing: Text('Ksh. ${_t.amount}', style: TextStyle(color: _t.isPositive ? Colors.green : Colors.redAccent,)),
+          trailing: Text('Ksh. ${_t.amountFormated}', style: TextStyle(color: _t.isPositive ? Colors.green : Colors.redAccent,)),
           onTap: (){
             showDialog(
               context: context, 

@@ -1,4 +1,5 @@
 import 'package:mpesa_report/models/export_models.dart';
+import 'package:mpesa_report/utils/amount_to_string.dart';
 import 'package:mpesa_report/utils/export_utils.dart';
 
 class TransactionModel implements Comparable<TransactionModel> {
@@ -26,6 +27,8 @@ class TransactionModel implements Comparable<TransactionModel> {
 
   String get partyDetail => partyName ?? '';
   bool get isPositive => true;
+
+  String get amountFormated => amount.string;
 
   TransactionModel.fromMessageString(String _body){
     body = _body;
