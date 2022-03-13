@@ -15,6 +15,7 @@ dependencies:
   ussd_advanced: ^0.1.2
   flutter_switch: ^0.3.2
   shared_preferences: ^2.0.13
+  fl_chart: ^0.46.0
 
   cupertino_icons: ^1.0.4
 
