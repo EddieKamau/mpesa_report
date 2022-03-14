@@ -17,6 +17,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   bool isSearching = false;
   List<TransactionModel> _transactions = [];
   DateTimeRange? _dateTimeRange;
+  List<TransactionModel> _bufferTransactions = [];
 
   @override
   void initState() {
@@ -26,7 +27,14 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   void search(String val){
     setState(() {
-      _transactions = widget.itemModel.transactions.search(val);
+      if(_dateTimeRange != null){
+        _transactions = widget.itemModel.transactions.dateFilter(_dateTimeRange!);
+      }else{
+        _transactions = widget.itemModel.transactions;
+      }
+
+      _transactions = _transactions.search(val);
+      _bufferTransactions = List.from(_transactions);
     });
   }
 
@@ -34,13 +42,14 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
     setState(() {
       _transactions = widget.itemModel.transactions;
       _dateTimeRange = null;
+      _bufferTransactions = [];
     });
   }
 
   void filterByDate(DateTimeRange dateTimeRange){
     setState(() {
       _dateTimeRange = dateTimeRange;
-      _transactions = _transactions.dateFilter(dateTimeRange);
+      _transactions = isSearching ? _bufferTransactions.dateFilter(dateTimeRange) : widget.itemModel.transactions.dateFilter(dateTimeRange);
     });
   }
 
