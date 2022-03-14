@@ -33,48 +33,51 @@ class MpesaReportModule{
     for (var message in _messages) {
 
 
-      String _body = message.body ?? '';
-      
+      try {
+        String _body = message.body ?? '';
 
-      if(_body.contains('Failed.') || _body.contains('[') || _body.contains('failed,')){
-        continue;
-      }
+        if(_body.contains('Failed.') || _body.contains('[') || _body.contains('failed,')){
+          continue;
+        }
 
-      if(_body.contains('Give')){ // deposit
-        recordsModel.depositTransactionModule.process(_body);
-      }else if(_body.contains('for account') || _body.contains('airtime')){ // bills / airtime
-        recordsModel.billsTransactionModule.process(_body);
+        if(_body.contains('Give')){ // deposit
+          recordsModel.depositTransactionModule.process(_body);
+        }else if(_body.contains('for account') || _body.contains('airtime')){ // bills / airtime
+          recordsModel.billsTransactionModule.process(_body);
 
-      }else if(_body.contains('repaid') || _body.contains('repayment of')){ // loan pay
-        recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: true);
+        }else if(_body.contains('repaid') || _body.contains('repayment of')){ // loan pay
+          recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: true);
 
-      }else if(_body.contains('loan has been approved')){ // get loan
-        recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: false);
+        }else if(_body.contains('loan has been approved')){ // get loan
+          recordsModel.mshwariLoansTransactionModule.process(_body, loanPay: false);
 
-      } else if(_body.contains('paid')){ // buy goods
-        recordsModel.goodsServicesTransactionModule.process(_body);
+        } else if(_body.contains('paid')){ // buy goods
+          recordsModel.goodsServicesTransactionModule.process(_body);
 
-      } else if(_body.contains('have received')){ //recieved
-        recordsModel.receivedTransactionModule.process(_body);
+        } else if(_body.contains('have received')){ //recieved
+          recordsModel.receivedTransactionModule.process(_body);
 
-      } else if(_body.contains('sent')){ // sent
-        recordsModel.sentTransactionModule.process(_body);
-        
-      } else if(_body.contains('transferred')|| _body.contains('transfered')){ // savings
-        if(_body.contains('from')){
-          recordsModel.savingsTransactionModule.process(_body, savingsIn: false);
+        } else if(_body.contains('sent')){ // sent
+          recordsModel.sentTransactionModule.process(_body);
+          
+        } else if(_body.contains('transferred')|| _body.contains('transfered')){ // savings
+          if(_body.contains('from')){
+            recordsModel.savingsTransactionModule.process(_body, savingsIn: false);
 
-        } else {
-          recordsModel.savingsTransactionModule.process(_body, savingsIn: true);
+          } else {
+            recordsModel.savingsTransactionModule.process(_body, savingsIn: true);
+
+          }
+          
+        } else if(_body.contains('Reversal')){ // reversal
+          recordsModel.reversalTransactionModule.process(_body);
+
+        } else if(_body.contains('Withdraw')){ // withdraw
+          recordsModel.withdrawTransactionModule.process(_body);
 
         }
-        
-      } else if(_body.contains('Reversal')){ // reversal
-        recordsModel.reversalTransactionModule.process(_body);
-
-      } else if(_body.contains('Withdraw')){ // withdraw
-        recordsModel.withdrawTransactionModule.process(_body);
-
+      } catch (e) {
+        continue;
       }
 
     }
