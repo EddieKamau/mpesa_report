@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:mpesa_report/models/export_models.dart';
 import 'package:mpesa_report/utils/amount_to_string.dart';
 import 'package:mpesa_report/utils/export_utils.dart';
@@ -110,4 +111,18 @@ extension TransactionsTotals on List<TransactionModel>{
     return _in;
 
   }
+
+  List<TransactionModel> search(String val){
+    return where((t) => t.body.toLowerCase().contains(val.toLowerCase())).toList();
+  }
+
+  List<TransactionModel> dateFilter(DateTimeRange dateTimeRange){
+    return where((t) {
+      if(t.dateTime == null){
+        return false;
+      }
+      return t.dateTime!.isAfter(dateTimeRange.start) && t.dateTime!.isBefore(dateTimeRange.end);
+    }).toList();
+  }
+  
 }

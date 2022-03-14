@@ -16,6 +16,7 @@ class TransactionHomePage extends StatefulWidget {
 class _TransactionHomePageState extends State<TransactionHomePage> {
   bool isSearching = false;
   List<TransactionModel> _transactions = [];
+  DateTimeRange? _dateTimeRange;
 
   @override
   void initState() {
@@ -25,13 +26,21 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   void search(String val){
     setState(() {
-      _transactions = widget.itemModel.transactions.where((t) => t.body.toLowerCase().contains(val.toLowerCase())).toList();
+      _transactions = widget.itemModel.transactions.search(val);
     });
   }
 
   void stopSearch(){
     setState(() {
       _transactions = widget.itemModel.transactions;
+      _dateTimeRange = null;
+    });
+  }
+
+  void filterByDate(DateTimeRange dateTimeRange){
+    setState(() {
+      _dateTimeRange = dateTimeRange;
+      _transactions = _transactions.dateFilter(dateTimeRange);
     });
   }
 
@@ -56,6 +65,19 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
             ),
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var _res = await showDateRangePicker(
+            context: context, firstDate: DateTime(2019), lastDate: DateTime(2099),
+            initialDateRange: _dateTimeRange
+          );
+
+          if(_res != null){
+            filterByDate(_res);
+          }
+        },
+        child: const Icon(Icons.calendar_today),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
