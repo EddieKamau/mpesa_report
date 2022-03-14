@@ -25,10 +25,24 @@ class _SmsReportState extends State<SmsReport> {
   
   bool _isDarkTheme = false;
 
-  List<ItemModel> _items = [];
-  List<ReportItem> _reportItems = [];
+  final List<ItemModel> _items = [];
 
   ItemModel _all = ItemModel(label: 'All', transactions: [], iconData: Icons.all_inbox_outlined);
+
+  List<List<TransactionModel>> _list = [];
+
+  final List<String> _labels = [
+      'Withdraw', 'Deposit', 'Sent', 'Received', 'Pay bills', 'Buy goods', 'Savings', 'Loans', 'Reversal'
+    ];
+
+    final List<IconData> _icons = [
+      Icons.outbond_outlined, Icons.inbox_outlined, Icons.send_to_mobile, Icons.call_received, Icons.receipt_long, 
+      Icons.shopping_cart_outlined, Icons.savings_outlined, Icons.money_outlined, Icons.restart_alt
+    ];
+
+    final List<Color> _colors = [
+      Colors.orangeAccent, Colors.purpleAccent, Colors.redAccent, Colors.green, Colors.limeAccent, Colors.blue, Colors.blueGrey, Colors.black, Colors.brown
+    ];
 
   @override
   void initState() {
@@ -45,51 +59,25 @@ class _SmsReportState extends State<SmsReport> {
       setState(() {
         _all = ItemModel(label: 'All', transactions: mpesaReportModule.recordsModel.allTransactions(), iconData: Icons.all_inbox_outlined);
 
-        _items = [
-          ItemModel(label: 'Withdraw', transactions: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions, iconData: Icons.outbond_outlined),
-          ItemModel(label: 'Deposit', transactions: mpesaReportModule.recordsModel.depositTransactionModule.transactions, iconData: Icons.inbox_outlined),
-          ItemModel(label: 'Sent', transactions: mpesaReportModule.recordsModel.sentTransactionModule.transactions, iconData: Icons.send_to_mobile),
-          ItemModel(label: 'Received', transactions: mpesaReportModule.recordsModel.receivedTransactionModule.transactions, iconData: Icons.call_received),
-          ItemModel(label: 'Pay bills', transactions: mpesaReportModule.recordsModel.billsTransactionModule.transactions, iconData: Icons.receipt_long),
-          ItemModel(label: 'Buy goods', transactions: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions, iconData: Icons.shopping_cart_outlined),
-          ItemModel(label: 'Savings', transactions: mpesaReportModule.recordsModel.savingsTransactionModule.transactions, iconData: Icons.savings_outlined),
-          ItemModel(label: 'Loans', transactions: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions, iconData: Icons.money_outlined),
-          ItemModel(label: 'Reversal', transactions: mpesaReportModule.recordsModel.reversalTransactionModule.transactions, iconData: Icons.restart_alt),
+        _list = [
+          mpesaReportModule.recordsModel.withdrawTransactionModule.transactions, // Withdraw
+          mpesaReportModule.recordsModel.depositTransactionModule.transactions, // Deposit
+          mpesaReportModule.recordsModel.sentTransactionModule.transactions, // Sent
+          mpesaReportModule.recordsModel.receivedTransactionModule.transactions, // Received
+          mpesaReportModule.recordsModel.billsTransactionModule.transactions, // Pay bills
+          mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions, // Buy goods
+          mpesaReportModule.recordsModel.savingsTransactionModule.transactions, // Savings
+          mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions, // Loans
+          mpesaReportModule.recordsModel.reversalTransactionModule.transactions, // Reversal
         ];
 
-        _reportItems = [
-          ReportItem(label: 'Withdraw', value: mpesaReportModule.recordsModel.withdrawTransactionModule.totalAmount, color: Colors.orangeAccent),
-          ReportItem(label: 'Deposit', value: mpesaReportModule.recordsModel.depositTransactionModule.transactions.totalAmount, color: Colors.purpleAccent),
-          ReportItem(label: 'Sent', value: mpesaReportModule.recordsModel.sentTransactionModule.transactions.totalAmount, color: Colors.redAccent),
-          ReportItem(label: 'Received', value: mpesaReportModule.recordsModel.receivedTransactionModule.transactions.totalAmount, color: Colors.green),
-          ReportItem(label: 'Pay bills', value: mpesaReportModule.recordsModel.billsTransactionModule.transactions.totalAmount, color: Colors.limeAccent),
-          ReportItem(label: 'Buy goods', value: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions.totalAmount, color: Colors.blue),
-          ReportItem(label: 'Savings', value: mpesaReportModule.recordsModel.savingsTransactionModule.transactions.totalAmount, color: Colors.blueGrey),
-          ReportItem(label: 'Loans', value: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions.totalAmount, color: Colors.black),
-          ReportItem(label: 'Reversal', value: mpesaReportModule.recordsModel.reversalTransactionModule.transactions.totalAmount, color: Colors.brown),
-        ];
-
-        _reportItems.retainWhere((element) => element.value > 0);
+        
+        for(int i=0; i< _list.length; i++){
+          _items.add(ItemModel(label: _labels[i], transactions: _list[i], iconData: _icons[i]));
+        }
+        
       });
     });
-  }
-
-  void filterReportsByDate(DateTimeRange dateTimeRange){
-      setState(() {
-        _reportItems = [
-          ReportItem(label: 'Withdraw', value: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.orangeAccent),
-          ReportItem(label: 'Deposit', value: mpesaReportModule.recordsModel.depositTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.purpleAccent),
-          ReportItem(label: 'Sent', value: mpesaReportModule.recordsModel.sentTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.redAccent),
-          ReportItem(label: 'Received', value: mpesaReportModule.recordsModel.receivedTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.green),
-          ReportItem(label: 'Pay bills', value: mpesaReportModule.recordsModel.billsTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.limeAccent),
-          ReportItem(label: 'Buy goods', value: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.blue),
-          ReportItem(label: 'Savings', value: mpesaReportModule.recordsModel.savingsTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.blueGrey),
-          ReportItem(label: 'Loans', value: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.black),
-          ReportItem(label: 'Reversal', value: mpesaReportModule.recordsModel.reversalTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.brown),
-        ];
-
-        _reportItems.retainWhere((element) => element.value > 0);
-      });
   }
 
   @override
@@ -145,8 +133,9 @@ class _SmsReportState extends State<SmsReport> {
                               onTap: (){
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_)=> ReportsPage(
-                                    _reportItems,
-                                    onDateFilter: filterReportsByDate
+                                    transactions: _list,
+                                    labels: _labels,
+                                    colors: _colors,
                                   )
                                 ));
                               },
@@ -158,7 +147,7 @@ class _SmsReportState extends State<SmsReport> {
                                 mpesaReportModule.recordsModel.allTransactions().length,
                                 iconData: _all.iconData,
                                 onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_all, isAll: true,)));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(transactions: _all.transactions, label: _all.label, isAll: true,)));
                                 },
                               ),
                             for(var _item in _items)
@@ -167,7 +156,7 @@ class _SmsReportState extends State<SmsReport> {
                                 _item.transactions.length,
                                 iconData: _item.iconData,
                                 onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(_item)));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(transactions: _item.transactions, label: _item.label,)));
                                 },
                               ),
                           ],

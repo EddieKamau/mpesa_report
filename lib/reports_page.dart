@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:mpesa_report/models/transaction_model.dart';
+import 'package:mpesa_report/transactions_page.dart';
 import 'package:mpesa_report/utils/amount_to_string.dart';
 
 class ReportsPage extends StatefulWidget {
-  const ReportsPage(this.items, {required this.onDateFilter,  Key? key }) : super(key: key);
-  final List<ReportItem> items;
-  final void Function(DateTimeRange dateTimeRange) onDateFilter;
+  const ReportsPage({required this.transactions, required this.labels, required this.colors, Key? key }) : super(key: key);
+  final List<List<TransactionModel>> transactions;
+  final List<String> labels;
+  final List<Color> colors;
 
   @override
   State<ReportsPage> createState() => _ReportsPageState();
@@ -14,22 +17,27 @@ class ReportsPage extends StatefulWidget {
 class _ReportsPageState extends State<ReportsPage> {
   bool isPotrait = true;
   DateTimeRange? _dateTimeRange;
+  List<ReportItem> items = [];
 
-  double _total = 0;
+  double get _total => items.fold(0, (previousValue, element) => previousValue+element.value);
 
   @override
   void initState() {
     super.initState();
-    _total = widget.items.fold(0, (previousValue, element) => previousValue+element.value);
+    for(int i=0; i< widget.transactions.length; i++){
+      items.add(ReportItem(index: i, label: widget.labels[i], value: widget.transactions[i].totalAmount, color: widget.colors[i]));
+    }
   }
 
-  @override
-  void didUpdateWidget(covariant ReportsPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void onDateFilter(DateTimeRange dateTimeRange){
     setState(() {
-      _total = widget.items.fold(0, (previousValue, element) => previousValue+element.value);
+      items.clear();
+      for(int i=0; i< widget.transactions.length; i++){
+        items.add(ReportItem(index: i, label: widget.labels[i], value: widget.transactions[i].dateFilter(dateTimeRange).totalAmount, color: widget.colors[i]));
+      }
     });
   }
+
 
 
   @override
@@ -47,7 +55,8 @@ class _ReportsPageState extends State<ReportsPage> {
             setState(() {
               _dateTimeRange = _res;
             });
-            widget.onDateFilter(_res);
+            var _dtr = DateTimeRange(start: _res.start, end: _res.end.add(const Duration(days: 1)));
+            onDateFilter(_dtr);
           }
         },
         child: const Icon(Icons.calendar_today),
@@ -77,7 +86,16 @@ class _ReportsPageState extends State<ReportsPage> {
     width: 290,
     child: PieChart(
       PieChartData(
-        sections: widget.items.map((item) => PieChartSectionData(
+        pieTouchData:PieTouchData(touchCallback: (a,b){
+          if(b!= null && b.touchedSection != null){
+            int _index = b.touchedSection!.touchedSectionIndex;
+            if (_index >= 0) {
+              _index = items.where((element) => element.value > 0).toList()[_index].index;
+              Navigator.of(context).push(MaterialPageRoute(builder: (_)=> TransactionHomePage(transactions: widget.transactions[_index], label: widget.labels[_index],)));
+            }
+          }
+        }),
+        sections: items.map((item) => PieChartSectionData(
             value: item.value,
             color: item.color,
             radius: 60 + 50 * item.percentage(_total) / 100,
@@ -87,11 +105,15 @@ class _ReportsPageState extends State<ReportsPage> {
     ),
   );
 
-  Widget _labels()=> SingleChildScrollView(
+  Widget _labels() {
+    List<ReportItem> _l = List.from(items);
+    _l.retainWhere((i)=> i.value > 0);
+    return SingleChildScrollView(
     child: Column(
-      children: widget.items.map((item) => Indicator(label: item.label, value: item.value.string, color: item.color,)).toList(),
+      children: _l.map((item) => Indicator(label: item.label, value: item.value.string, color: item.color,)).toList(),
     ),
   );
+  }
 }
 
 class Indicator extends StatelessWidget {
@@ -128,10 +150,20 @@ class Indicator extends StatelessWidget {
 }
 
 class ReportItem {
-  ReportItem({required this.label, required this.value, required this.color});
+  ReportItem({required this.label, required this.value, required this.color, required this.index});
   String label;
   double value;
   Color color;
+  int index;
+
 
   int percentage(double total)=> (100*value/total).round();
+
+  @override
+  bool operator ==(other)=> other is ReportItem && other.index == index;
+  
+
+  @override
+  int get hashCode => index;
+
 }

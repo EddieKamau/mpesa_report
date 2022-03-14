@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mpesa_report/main.dart';
 import 'package:mpesa_report/models/transaction_model.dart';
 import 'package:mpesa_report/utils/amount_to_string.dart';
 
 
 class TransactionHomePage extends StatefulWidget {
-  const TransactionHomePage(this.itemModel, {this.isAll = false, Key? key }) : super(key: key);
-  final ItemModel itemModel;
+  const TransactionHomePage({required this.transactions, required this.label, this.isAll = false, Key? key }) : super(key: key);
+  final List<TransactionModel> transactions;
+  final String label;
   final bool isAll;
 
   @override
@@ -22,15 +22,16 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   @override
   void initState() {
     super.initState();
-    _transactions = widget.itemModel.transactions;
+    _transactions = widget.transactions;
   }
+
 
   void search(String val){
     setState(() {
       if(_dateTimeRange != null){
-        _transactions = widget.itemModel.transactions.dateFilter(_dateTimeRange!);
+        _transactions = widget.transactions.dateFilter(_dateTimeRange!);
       }else{
-        _transactions = widget.itemModel.transactions;
+        _transactions = widget.transactions;
       }
 
       _transactions = _transactions.search(val);
@@ -40,7 +41,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   void stopSearch(){
     setState(() {
-      _transactions = widget.itemModel.transactions;
+      _transactions = widget.transactions;
       _dateTimeRange = null;
       _bufferTransactions = [];
     });
@@ -49,7 +50,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   void filterByDate(DateTimeRange dateTimeRange){
     setState(() {
       _dateTimeRange = dateTimeRange;
-      _transactions = isSearching ? _bufferTransactions.dateFilter(dateTimeRange) : widget.itemModel.transactions.dateFilter(dateTimeRange);
+      _transactions = isSearching ? _bufferTransactions.dateFilter(dateTimeRange) : widget.transactions.dateFilter(dateTimeRange);
     });
   }
 
@@ -57,7 +58,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  AppBar(
-        title: isSearching ? _searchField() : Text('${widget.itemModel.label} Transactions'),
+        title: isSearching ? _searchField() : Text('${widget.label} Transactions'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -83,7 +84,8 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
           );
 
           if(_res != null){
-            filterByDate(_res);
+            var _dtr = DateTimeRange(start: _res.start, end: _res.end.add(const Duration(days: 1)));
+            filterByDate(_dtr);
           }
         },
         child: const Icon(Icons.calendar_today),
