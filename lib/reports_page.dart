@@ -3,8 +3,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:mpesa_report/utils/amount_to_string.dart';
 
 class ReportsPage extends StatefulWidget {
-  const ReportsPage(this.items, { Key? key }) : super(key: key);
+  const ReportsPage(this.items, {required this.onDateFilter,  Key? key }) : super(key: key);
   final List<ReportItem> items;
+  final void Function(DateTimeRange dateTimeRange) onDateFilter;
 
   @override
   State<ReportsPage> createState() => _ReportsPageState();
@@ -12,6 +13,7 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   bool isPotrait = true;
+  DateTimeRange? _dateTimeRange;
 
   double _total = 0;
 
@@ -21,14 +23,38 @@ class _ReportsPageState extends State<ReportsPage> {
     _total = widget.items.fold(0, (previousValue, element) => previousValue+element.value);
   }
 
+  @override
+  void didUpdateWidget(covariant ReportsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      _total = widget.items.fold(0, (previousValue, element) => previousValue+element.value);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
         isPotrait = MediaQuery.of(context).orientation == Orientation.portrait;
-        return Material(
-          child: isPotrait ? Padding(
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              var _res = await showDateRangePicker(
+                context: context, firstDate: DateTime(2019), lastDate: DateTime(2099),
+                initialDateRange: _dateTimeRange
+              );
+
+              if(_res != null){
+                setState(() {
+                  _dateTimeRange = _res;
+                });
+                widget.onDateFilter(_res);
+              }
+            },
+            child: const Icon(Icons.calendar_today),
+          ),
+          body: isPotrait ? Padding(
             padding: const EdgeInsets.only(top: 25, bottom: 10, left: 20, right: 10),
             child: Column(
               children: [

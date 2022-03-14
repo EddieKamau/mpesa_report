@@ -74,6 +74,24 @@ class _SmsReportState extends State<SmsReport> {
     });
   }
 
+  void filterReportsByDate(DateTimeRange dateTimeRange){
+      setState(() {
+        _reportItems = [
+          ReportItem(label: 'Withdraw', value: mpesaReportModule.recordsModel.withdrawTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.orangeAccent),
+          ReportItem(label: 'Deposit', value: mpesaReportModule.recordsModel.depositTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.purpleAccent),
+          ReportItem(label: 'Sent', value: mpesaReportModule.recordsModel.sentTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.redAccent),
+          ReportItem(label: 'Received', value: mpesaReportModule.recordsModel.receivedTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.green),
+          ReportItem(label: 'Pay bills', value: mpesaReportModule.recordsModel.billsTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.limeAccent),
+          ReportItem(label: 'Buy goods', value: mpesaReportModule.recordsModel.goodsServicesTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.blue),
+          ReportItem(label: 'Savings', value: mpesaReportModule.recordsModel.savingsTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.blueGrey),
+          ReportItem(label: 'Loans', value: mpesaReportModule.recordsModel.mshwariLoansTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.black),
+          ReportItem(label: 'Reversal', value: mpesaReportModule.recordsModel.reversalTransactionModule.transactions.dateFilter(dateTimeRange).totalAmount, color: Colors.brown),
+        ];
+
+        _reportItems.retainWhere((element) => element.value > 0);
+      });
+  }
+
   @override
   void dispose() {
     themingController.removeListener(() { });
@@ -126,7 +144,10 @@ class _SmsReportState extends State<SmsReport> {
                             ChartCard(
                               onTap: (){
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_)=> ReportsPage(_reportItems)
+                                  builder: (_)=> ReportsPage(
+                                    _reportItems,
+                                    onDateFilter: filterReportsByDate
+                                  )
                                 ));
                               },
                             ),
