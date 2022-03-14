@@ -16,7 +16,7 @@ class BillsModel extends TransactionModel{
       partyName = 'AIRTIME'; // name
       String _acc = 'self';
       if(_body.split('airtime for ').length > 1 ){
-        _acc = _body.split('airtime for ')[1];
+        _acc = _body.split('airtime for ')[1].split(' ')[0];
       }
       partyAccount = _acc; // account
     }
