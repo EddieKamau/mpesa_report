@@ -19,15 +19,26 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   DateTimeRange? _dateTimeRange;
   List<TransactionModel> _bufferTransactions = [];
 
+  DateTime? _lstInputTime;
+
+  bool get _isloading => _lstInputTime != null && _lstInputTime!.isAfter(DateTime.now());
+
   @override
   void initState() {
     super.initState();
     _transactions = widget.transactions;
   }
 
+  void __setLstDate(){
+    _lstInputTime = DateTime.now().add(const Duration(seconds: 1));
+    Future.delayed(const Duration(seconds: 1),).then((value) => setState((){}));
+  
+  }
+
 
   void search(String val){
     setState(() {
+      __setLstDate();
       if(_dateTimeRange != null){
         _transactions = widget.transactions.dateFilter(_dateTimeRange!);
       }else{
@@ -41,6 +52,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   void stopSearch(){
     setState(() {
+      _lstInputTime = null;
       _transactions = widget.transactions;
       _dateTimeRange = null;
       _bufferTransactions = [];
@@ -144,7 +156,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                 ),
               ),
             ),
-            if(isSearching) const LinearProgressIndicator(),
+            if(isSearching && _isloading) const LinearProgressIndicator(),
 
             Expanded(
               child: TransactionsPage(_transactions, isAll: widget.isAll,),
