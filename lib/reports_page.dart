@@ -34,49 +34,41 @@ class _ReportsPageState extends State<ReportsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        isPotrait = MediaQuery.of(context).orientation == Orientation.portrait;
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              var _res = await showDateRangePicker(
-                context: context, firstDate: DateTime(2019), lastDate: DateTime(2099),
-                initialDateRange: _dateTimeRange
-              );
+    return Scaffold(
+      appBar: AppBar(centerTitle: true, title: const Text('Report'),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var _res = await showDateRangePicker(
+            context: context, firstDate: DateTime(2019), lastDate: DateTime(2099),
+            initialDateRange: _dateTimeRange
+          );
 
-              if(_res != null){
-                setState(() {
-                  _dateTimeRange = _res;
-                });
-                widget.onDateFilter(_res);
-              }
-            },
-            child: const Icon(Icons.calendar_today),
-          ),
-          body: isPotrait ? Padding(
-            padding: const EdgeInsets.only(top: 25, bottom: 10, left: 20, right: 10),
-            child: Column(
-              children: [
-                // chart
-                _chart(),
-                const SizedBox(height: 10,),
-                // labels
-                _labels(),
-              ],
-            ),
-          ) : 
-          Row(
+          if(_res != null){
+            setState(() {
+              _dateTimeRange = _res;
+            });
+            widget.onDateFilter(_res);
+          }
+        },
+        child: const Icon(Icons.calendar_today),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 15,
             children: [
               // chart
               _chart(),
-                const SizedBox(width: 10,),
+              const SizedBox(height: 10,),
               // labels
-              _labels()
+              _labels(),
             ],
           ),
-        );
-      }
+        ),
+      ),
     );
   }
 
@@ -95,11 +87,9 @@ class _ReportsPageState extends State<ReportsPage> {
     ),
   );
 
-  Widget _labels()=> Expanded(
-    child: SingleChildScrollView(
-      child: Column(
-        children: widget.items.map((item) => Indicator(label: item.label, value: item.value.string, color: item.color,)).toList(),
-      ),
+  Widget _labels()=> SingleChildScrollView(
+    child: Column(
+      children: widget.items.map((item) => Indicator(label: item.label, value: item.value.string, color: item.color,)).toList(),
     ),
   );
 }
