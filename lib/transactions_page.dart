@@ -171,7 +171,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
     padding: const EdgeInsets.all(10),
     height: 50,
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor,
       borderRadius: BorderRadius.circular(20)
     ),
     child: TextField(

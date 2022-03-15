@@ -17,7 +17,7 @@ class ReceivedModel extends TransactionModel{
   }
 
   @override
-  String get partyDetail => 'To: ${partyName ?? ""} _ ${partyAccount ?? ""}';
+  String get partyDetail => 'From: ${partyName ?? ""} _ ${partyAccount ?? ""}';
 
   @override
   bool get isPositive => true;
