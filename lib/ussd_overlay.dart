@@ -86,6 +86,7 @@ class _USSDOverlayState extends State<USSDOverlay> {
           if(_showProgress) LinearProgressIndicator(
             minHeight: 10,
             value: _progressValue,
+            color: Theme.of(context).primaryColor,
           ),
           Expanded(
             child: UssdWidget(
@@ -146,9 +147,9 @@ class _LoadiningWidget extends StatelessWidget {
       child: Card(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const[
-            Text('Loading...'),
-            LinearProgressIndicator()
+          children: [
+            const Text('Loading...'),
+            LinearProgressIndicator(color: Theme.of(context).primaryColor,)
           ],
         ),
       ),
