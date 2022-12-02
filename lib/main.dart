@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_apps/flutter_overlay_apps.dart';
 import 'package:mpesa_report/models/transaction_model.dart';
 import 'package:mpesa_report/modules/mpesa_report_module.dart';
 import 'package:mpesa_report/reports_page.dart';
 import 'package:mpesa_report/theming_controller.dart';
 import 'package:mpesa_report/transactions_page.dart';
+import 'package:mpesa_report/ussd_overlay.dart';
 import 'package:ussd_advanced/ussd_advanced.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
@@ -27,6 +29,15 @@ void main() {
   runApp(const SmsReport());
 }
 
+// overlay entry point
+@pragma("vm:entry-point")
+void showOverlay() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: USSDOverlay()
+  ));
+}
+
 class SmsReport extends StatefulWidget {
 
   const SmsReport({Key? key}) : super(key: key); 
@@ -39,7 +50,7 @@ class _SmsReportState extends State<SmsReport> {
   final MpesaReportModule mpesaReportModule = MpesaReportModule();
   final ThemingController themingController = ThemingController();
   
-  bool _isDarkTheme = false;
+  late bool _isDarkTheme;
 
   final List<ItemModel> _items = [];
 
@@ -94,11 +105,25 @@ class _SmsReportState extends State<SmsReport> {
         
       });
     });
+
+    FlutterOverlayApps.overlayListener().listen((event) {
+      var _message = OverlayMessage.fromMap(event);
+      if(_message.type == OverlayMessageType.message){
+        UssdAdvanced.sendMessage(_message.message.toString()).then((value) => FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(message: value).asMap()));
+      }else{
+        UssdAdvanced.cancelSession();
+      }
+    });
+
+    
+
   }
 
   @override
   void dispose() {
     themingController.removeListener(() { });
+    FlutterOverlayApps.disposeOverlayListener();
+    FlutterOverlayApps.closeOverlay();
     super.dispose();
   }
 
@@ -111,8 +136,33 @@ class _SmsReportState extends State<SmsReport> {
         builder: (context) {
           return Scaffold(
             floatingActionButton: FloatingActionButton(
-              onPressed: (){
-                UssdAdvanced.sendUssd(code: '*334#', subscriptionId: -1);
+              onPressed: () async {
+
+                var res = await UssdAdvanced.multisessionUssd(code: "*544#", subscriptionId: -1);
+                UssdAdvanced.onEnd().listen((event) {
+                  FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(type: OverlayMessageType.close).asMap());
+                  UssdAdvanced.cancelSession();
+                });
+
+                await FlutterOverlayApps.showOverlay(
+                    // height: 600,
+                    // width: (MediaQuery.of(context).size.width *.98).floor(),
+                    alignment: OverlayAlignment.center);
+                  
+                
+                
+                FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(message: res).asMap());
+
+                // showDialog(
+                //   context: context, 
+                //   builder: (_)=> GestureDetector(
+                //     child: const Scaffold(
+                //       body: Dialog(
+                //         child: UssdWidget(''),
+                //       ),
+                //     ),
+                //   )
+                // );
               },
               child: const Icon(Icons.send_outlined),
             ),
