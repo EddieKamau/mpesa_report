@@ -1,14 +1,11 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_overlay_apps/flutter_overlay_apps.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:mpesa_report/src/reports/models/transaction_model.dart';
 import 'package:mpesa_report/src/reports/modules/mpesa_report_module.dart';
 import 'package:mpesa_report/src/reports/pages/reports_page.dart';
 import 'package:mpesa_report/src/reports/pages/transactions_page.dart';
 import 'package:mpesa_report/theming_controller.dart';
-import 'package:mpesa_report/ussd_overlay.dart';
-import 'package:ussd_advanced/ussd_advanced.dart';
 
 class SmsReport extends StatefulWidget {
 
@@ -73,14 +70,14 @@ class _SmsReportState extends State<SmsReport> {
       });
     });
 
-    FlutterOverlayApps.overlayListener().listen((event) {
-      var _message = OverlayMessage.fromMap(event);
-      if(_message.type == OverlayMessageType.message){
-        UssdAdvanced.sendMessage(_message.message.toString()).then((value) => FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(message: value).asMap()));
-      }else{
-        UssdAdvanced.cancelSession();
-      }
-    });
+    // FlutterOverlayApps.overlayListener().listen((event) {
+    //   var _message = OverlayMessage.fromMap(event);
+    //   if(_message.type == OverlayMessageType.message){
+    //     UssdAdvanced.sendMessage(_message.message.toString()).then((value) => FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(message: value).asMap()));
+    //   }else{
+    //     UssdAdvanced.cancelSession();
+    //   }
+    // });
 
     
 
@@ -89,8 +86,8 @@ class _SmsReportState extends State<SmsReport> {
   @override
   void dispose() {
     themingController.removeListener(() { });
-    FlutterOverlayApps.disposeOverlayListener();
-    FlutterOverlayApps.closeOverlay();
+    // FlutterOverlayApps.disposeOverlayListener();
+    // FlutterOverlayApps.closeOverlay();
     super.dispose();
   }
 
@@ -100,37 +97,37 @@ class _SmsReportState extends State<SmsReport> {
     return Builder(
       builder: (context) {
         return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: () async {
 
-              var res = await UssdAdvanced.multisessionUssd(code: "*544#", subscriptionId: -1);
-              UssdAdvanced.onEnd().listen((event) {
-                FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(type: OverlayMessageType.close).asMap());
-                UssdAdvanced.cancelSession();
-              });
+          //     var res = await UssdAdvanced.multisessionUssd(code: "*544#", subscriptionId: -1);
+          //     UssdAdvanced.onEnd().listen((event) {
+          //       FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(type: OverlayMessageType.close).asMap());
+          //       UssdAdvanced.cancelSession();
+          //     });
 
-              await FlutterOverlayApps.showOverlay(
-                  // height: 600,
-                  // width: (MediaQuery.of(context).size.width *.98).floor(),
-                  alignment: OverlayAlignment.center);
+          //     await FlutterOverlayApps.showOverlay(
+          //         // height: 600,
+          //         // width: (MediaQuery.of(context).size.width *.98).floor(),
+          //         alignment: OverlayAlignment.center);
                 
               
               
-              FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(message: res).asMap());
+          //     FlutterOverlayApps.sendDataToAndFromOverlay(OverlayMessage(message: res).asMap());
 
-              // showDialog(
-              //   context: context, 
-              //   builder: (_)=> GestureDetector(
-              //     child: const Scaffold(
-              //       body: Dialog(
-              //         child: UssdWidget(''),
-              //       ),
-              //     ),
-              //   )
-              // );
-            },
-            child: const Icon(Icons.send_outlined),
-          ),
+          //     // showDialog(
+          //     //   context: context, 
+          //     //   builder: (_)=> GestureDetector(
+          //     //     child: const Scaffold(
+          //     //       body: Dialog(
+          //     //         child: UssdWidget(''),
+          //     //       ),
+          //     //     ),
+          //     //   )
+          //     // );
+          //   },
+          //   child: const Icon(Icons.send_outlined),
+          // ),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
             child: Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mpesa_report/src/reports/pages/sms_reports_page.dart';
+import 'package:mpesa_report/src/transactions/trasnact_page.dart';
 import 'package:mpesa_report/theming_controller.dart';
 import 'package:mpesa_report/ussd_overlay.dart';
 
@@ -26,9 +27,12 @@ void main() {
 // overlay entry point
 @pragma("vm:entry-point")
 void showOverlay() {
-  runApp(const MaterialApp(
+  WidgetsFlutterBinding.ensureInitialized();
+  final ThemingController themingController = ThemingController();
+  runApp(MaterialApp(
+    theme: themingController.isDarkTheme ? ThemeData.dark() : ThemeData(primarySwatch: _primarySatch),
     debugShowCheckedModeBanner: false,
-    home: USSDOverlay()
+    home: const USSDOverlay()
   ));
 }
 
@@ -39,7 +43,9 @@ class EntryPage extends StatefulWidget {
   State<EntryPage> createState() => _EntryPageState();
 }
 
-class _EntryPageState extends State<EntryPage> {
+class _EntryPageState extends State<EntryPage> with SingleTickerProviderStateMixin{
+  late final TabController tabController;
+  int _currentTabIndex = 0;
   final ThemingController themingController = ThemingController();
   late bool _isDarkTheme;
 
@@ -52,13 +58,40 @@ class _EntryPageState extends State<EntryPage> {
         _isDarkTheme = themingController.isDarkTheme;
       });
     });
+
+    tabController = TabController(length: 2, vsync: this, initialIndex: _currentTabIndex);
+    tabController.addListener(() {
+      setState(() {
+        _currentTabIndex = tabController.index;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: _isDarkTheme ? ThemeData.dark() :  ThemeData(primarySwatch: _primarySatch),
-      home: const SmsReport()
+      // home: const SmsReport() const TransactPage()
+      home: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentTabIndex,
+          onTap: (index){
+            tabController.index = index;
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.send_outlined,),label: 'Transact',),
+
+            BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Reports'),
+          ]
+        ),
+        body: TabBarView(
+          controller: tabController,
+          children: const [
+            TransactPage(),
+            SmsReport(),
+          ]
+        ),
+      )
     );
   }
 }
