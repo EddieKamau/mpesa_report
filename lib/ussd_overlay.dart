@@ -69,13 +69,21 @@ class _USSDOverlayState extends State<USSDOverlay> {
           data = _message.message.toString();
           widgetType = _message.widgetType;
         });
-      } else {
+      } else if(_message.type == OverlayMessageType.close) {
         // FlutterOverlayApps.closeOverlay();
         setState(() {
           isLoading = false;
           data = _message.message.toString();
           widgetType = _message.widgetType;
         });
+      }else{
+        if(event['method'] == 'backButton'){
+          if(mounted && Navigator.of(context).canPop()){Navigator.of(context).pop();}
+          else{
+            
+            onCancel();
+          }
+        }
       }
     });
   }
@@ -88,6 +96,7 @@ class _USSDOverlayState extends State<USSDOverlay> {
     data = '';
     widgetType = UssdWidgetType.dialog;
     overlayStreamController.close();
+    FlutterOverlayApps.closeOverlay();
   }
 
 
@@ -147,9 +156,17 @@ class _USSDOverlayState extends State<USSDOverlay> {
 
 class OverlayMessage{
   OverlayMessage({this.type = OverlayMessageType.message, this.message, this.widgetType = UssdWidgetType.dialog});
-  OverlayMessage.fromMap(Map map){
-    type = OverlayMessageType.values.byName(map['type']);
-    widgetType = UssdWidgetType.values.byName(map['widgetType']);
+  OverlayMessage. fromMap(Map map){
+    try{
+      type = OverlayMessageType.values.byName(map['type']);
+    }catch(_){
+      type = OverlayMessageType.other;
+    }
+    try{
+      widgetType = UssdWidgetType.values.byName(map['widgetType']);
+    }catch(_){
+      widgetType = UssdWidgetType.dialog;
+    }
     message = map['message']?.toString();
   }
   late OverlayMessageType type;
@@ -163,7 +180,7 @@ class OverlayMessage{
   };
 }
 enum OverlayMessageType{
-  message, close
+  message, close, other
 }
 
 class _LoadiningWidget extends StatelessWidget {

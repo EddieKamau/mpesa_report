@@ -6,14 +6,14 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 2.0.0
 
 environment:
-  sdk: ">=2.16.0-134.5.beta <3.0.0"
+  sdk: ">=3.1.0-63.1.beta <4.0.0"
 
 dependencies:
   cupertino_icons: ^1.0.4
   fl_chart: ^0.46.0
   flutter:
     sdk: flutter
-  flutter_overlay_apps: 1.1.2
+  flutter_overlay_apps: 1.2.0
   flutter_switch: ^0.3.2
   fluttercontactpicker: ^4.7.0
   hive: ^2.2.3

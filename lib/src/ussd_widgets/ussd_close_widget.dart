@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_overlay_apps/flutter_overlay_apps.dart';
 
 class UssdCloseWidget extends StatefulWidget {
   const UssdCloseWidget({required this.data, this.onColse, Key? key}) : super(key: key);

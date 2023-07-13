@@ -20,6 +20,12 @@ class _TransactPageState extends State<TransactPage> {
     super.initState();
     Hive.initFlutter().then((value) => transactionItemModule.connectTransactionItemModel());
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    FlutterOverlayApps.closeOverlay();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +55,7 @@ class _TransactPageState extends State<TransactPage> {
                       await FlutterOverlayApps.showOverlay(
                         height: 300,
                         // width: (MediaQuery.of(context).size.width *.98).floor(),
+                        closeOnBackButton: false,
                         alignment: OverlayAlignment.center);
                     },
                     child: Card(
@@ -56,8 +63,8 @@ class _TransactPageState extends State<TransactPage> {
                         width: 90,
                         height: 90,
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: const [
+                        child: const Column(
+                          children: [
                             Icon(Icons.menu, size: 36,),
                             SizedBox(height: 4,),
                             Text('Menu')

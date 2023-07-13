@@ -293,13 +293,13 @@ class ChartCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: SizedBox(
+      child: const SizedBox(
         width: 140,
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10.0),
             child: Column(
-              children: const [
+              children: [
 
                 // icon
                 Icon(Icons.bar_chart, size: 50,),
