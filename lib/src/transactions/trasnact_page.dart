@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_apps/flutter_overlay_apps.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:mpesa_report/src/transactions/models/option_model.dart';
-import 'package:mpesa_report/src/transactions/modules/transaction_item_module.dart';
 import 'package:mpesa_report/src/transactions/widgets/transact_item.dart';
 
 class TransactPage extends StatefulWidget {
@@ -13,12 +11,12 @@ class TransactPage extends StatefulWidget {
 }
 
 class _TransactPageState extends State<TransactPage> {
-  final TransactionItemModule transactionItemModule = TransactionItemModule();
+  
 
   @override
   void initState() {
     super.initState();
-    Hive.initFlutter().then((value) => transactionItemModule.connectTransactionItemModel());
+    
   }
 
   @override

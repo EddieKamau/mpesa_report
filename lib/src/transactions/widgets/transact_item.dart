@@ -18,10 +18,10 @@ class TransactItem extends StatelessWidget {
         backgroundColor: Colors.transparent,
         context: context, 
         isScrollControlled: true,
-        builder: (_){
+        builder: (modalContext){
           return Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
+              color: Theme.of(modalContext).cardColor,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15),
                 topRight: Radius.circular(15)
@@ -44,10 +44,10 @@ class TransactItem extends StatelessWidget {
       showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context, 
-        builder: (_){
+        builder: (modalContext){
           return Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
+              color: Theme.of(modalContext).cardColor,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15),
                 topRight: Radius.circular(15)

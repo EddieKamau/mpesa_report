@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mpesa_report/src/reports/pages/sms_reports_page.dart';
+import 'package:mpesa_report/src/transactions/modules/transaction_item_module.dart';
 import 'package:mpesa_report/src/transactions/trasnact_page.dart';
 import 'package:mpesa_report/theming_controller.dart';
 import 'package:mpesa_report/ussd_overlay.dart';
@@ -44,6 +46,7 @@ class EntryPage extends StatefulWidget {
 }
 
 class _EntryPageState extends State<EntryPage> with SingleTickerProviderStateMixin{
+  final TransactionItemModule transactionItemModule = TransactionItemModule();
   late final TabController tabController;
   int _currentTabIndex = 0;
   final ThemingController themingController = ThemingController();
@@ -65,6 +68,8 @@ class _EntryPageState extends State<EntryPage> with SingleTickerProviderStateMix
         _currentTabIndex = tabController.index;
       });
     });
+
+    Hive.initFlutter().then((value) => transactionItemModule.connectTransactionItemModel());
   }
 
   @override
