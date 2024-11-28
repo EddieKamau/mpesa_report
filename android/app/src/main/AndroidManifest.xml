@@ -39,7 +39,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <!-- Ussd service -->
-        <service
+        <!-- <service
             android:name="com.phan_tech.ussd_advanced.USSDServiceKT"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false">
@@ -49,11 +49,11 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/ussd_service" />
-        </service>
+        </service> -->
 
         <!-- overlay service -->
-        <service
+        <!-- <service
            android:name="com.phan_tech.flutter_overlay_apps.OverlayService"
-           android:exported="false" />
+           android:exported="false" /> -->
     </application>
 </manifest>

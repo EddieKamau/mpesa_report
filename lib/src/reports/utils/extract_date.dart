@@ -1,7 +1,7 @@
 DateTime? extractDate(String _body){
   DateTime _dateTime;
   String _dtRaw;
-  if(!(_body.contains(' on ') || _body.contains(' On '))){
+  if(!(_body.contains(' on ') || _body.contains('.on ') || _body.contains(' On '))){
     
     return null;
   } 
@@ -17,6 +17,7 @@ DateTime? extractDate(String _body){
       
     } else if(_body.contains('.on ')){
       _dtRaw = _body.split('.on ')[1];
+      
     }else{
       _dtRaw = _body.split(' on ')[1];
     }
@@ -38,6 +39,7 @@ DateTime? extractDate(String _body){
     _time = _dtRaw.split(' ')[1].split(':');
     _period = _dtRaw.split(' ')[2];
   }
+  
   _dateTime = DateTime(
     int.parse('20${_date[2]}'), // year
     int.parse(_date[1]), // month

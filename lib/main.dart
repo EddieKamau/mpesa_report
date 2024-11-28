@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mpesa_report/src/reports/pages/sms_reports_page.dart';
-import 'package:mpesa_report/src/transactions/modules/transaction_item_module.dart';
-import 'package:mpesa_report/src/transactions/trasnact_page.dart';
 import 'package:mpesa_report/theming_controller.dart';
-import 'package:mpesa_report/ussd_overlay.dart';
 
 var _primarySatch = const MaterialColor(
     0xFF1B5E20,
@@ -26,17 +22,7 @@ void main() {
   runApp(const EntryPage());
 }
 
-// overlay entry point
-@pragma("vm:entry-point")
-void showOverlay() {
-  WidgetsFlutterBinding.ensureInitialized();
-  final ThemingController themingController = ThemingController();
-  runApp(MaterialApp(
-    theme: themingController.isDarkTheme ? ThemeData.dark() : ThemeData(primarySwatch: _primarySatch),
-    debugShowCheckedModeBanner: false,
-    home: const USSDOverlay()
-  ));
-}
+
 
 class EntryPage extends StatefulWidget {
   const EntryPage({Key? key}) : super(key: key);
@@ -46,9 +32,6 @@ class EntryPage extends StatefulWidget {
 }
 
 class _EntryPageState extends State<EntryPage> with SingleTickerProviderStateMixin{
-  final TransactionItemModule transactionItemModule = TransactionItemModule();
-  late final TabController tabController;
-  int _currentTabIndex = 0;
   final ThemingController themingController = ThemingController();
   late bool _isDarkTheme;
 
@@ -62,14 +45,7 @@ class _EntryPageState extends State<EntryPage> with SingleTickerProviderStateMix
       });
     });
 
-    tabController = TabController(length: 2, vsync: this, initialIndex: _currentTabIndex);
-    tabController.addListener(() {
-      setState(() {
-        _currentTabIndex = tabController.index;
-      });
-    });
 
-    Hive.initFlutter().then((value) => transactionItemModule.connectTransactionItemModel());
   }
 
   @override
@@ -77,25 +53,8 @@ class _EntryPageState extends State<EntryPage> with SingleTickerProviderStateMix
     return MaterialApp(
       theme: _isDarkTheme ? ThemeData.dark() :  ThemeData(primarySwatch: _primarySatch),
       // home: const SmsReport() const TransactPage()
-      home: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentTabIndex,
-          onTap: (index){
-            tabController.index = index;
-          },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.send_outlined,),label: 'Transact',),
-
-            BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Reports'),
-          ]
-        ),
-        body: TabBarView(
-          controller: tabController,
-          children: const [
-            TransactPage(),
-            SmsReport(),
-          ]
-        ),
+      home: const Scaffold(
+        body: SmsReport(),
       )
     );
   }
